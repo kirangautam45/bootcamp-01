@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App Backend Setup Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #fff;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        .step {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .step-number {
+            background: #27ae60;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        code {
+            background: #ecf0f1;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        .comment {
+            color: #7f8c8d;
+        }
+        .keyword {
+            color: #e74c3c;
+        }
+        .string {
+            color: #27ae60;
+        }
+        .function {
+            color: #3498db;
+        }
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .note-title {
+            font-weight: bold;
+            color: #856404;
+        }
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tech-item {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .tech-item strong {
+            display: block;
+            color: #2980b9;
+            margin-bottom: 5px;
+        }
+        ul {
+            margin: 15px 0 15px 30px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .file-structure {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre;
+        }
+        @media print {
+            body {
+                padding: 20px;
+            }
+            .step {
+                break-inside: avoid;
+            }
+            pre {
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Notes App Backend Setup Guide</h1>
+
+    <p>This guide will walk you through setting up and understanding the MERN stack backend for the Notes application. By the end, you'll understand how each component works together.</p>
+
+    <h2>Technology Stack Overview</h2>
+
+    <div class="tech-stack">
+        <div class="tech-item">
+            <strong>Node.js</strong>
+            JavaScript runtime for server-side code
+        </div>
+        <div class="tech-item">
+            <strong>Express.js</strong>
+            Web framework for building APIs
+        </div>
+        <div class="tech-item">
+            <strong>MongoDB</strong>
+            NoSQL database for storing notes
+        </div>
+        <div class="tech-item">
+            <strong>Mongoose</strong>
+            ODM library for MongoDB
+        </div>
+    </div>
+
+    <h2>Project Structure</h2>
+
+    <div class="file-structure">
+notes-app/
+  backend/
+    src/
+      models/
+        Note.js         # Database schema
+      routes/
+        noteRoutes.js   # API endpoints
+      server.js         # Main entry point
+    package.json        # Dependencies & scripts
+    </div>
+
+    <h2>Step-by-Step Setup</h2>
+
+    <div class="step">
+        <h3><span class="step-number">1</span>Prerequisites</h3>
+        <p>Before starting, make sure you have installed:</p>
+        <ul>
+            <li><strong>Node.js</strong> (v18 or higher) - Download from <code>nodejs.org</code></li>
+            <li><strong>MongoDB</strong> - Download from <code>mongodb.com</code> or use MongoDB Atlas (cloud)</li>
+        </ul>
+        <p>Verify installation by running:</p>
+        <pre><code>node --version
+npm --version
+mongod --version</code></pre>
+    </div>
+
+    <div class="step">
+        <h3><span class="step-number">2</span>Create Project Directory</h3>
+        <pre><code>mkdir notes-app
+cd notes-app
+mkdir backend
+cd backend</code></pre>
+    </div>
+
+    <div class="step">
+        <h3><span class="step-number">3</span>Initialize Node.js Project</h3>
+        <pre><code>npm init -y</code></pre>
+        <p>This creates a <code>package.json</code> file that tracks your project dependencies.</p>
+    </div>
+
+    <div class="step">
+        <h3><span class="step-number">4</span>Install Dependencies</h3>
+        <pre><code>npm install express mongoose cors dotenv</code></pre>
+        <p><strong>What each package does:</strong></p>
+        <ul>
+            <li><code>express</code> - Web framework for handling HTTP requests</li>
+            <li><code>mongoose</code> - Makes working with MongoDB easier</li>
+            <li><code>cors</code> - Allows frontend to communicate with backend</li>
+            <li><code>dotenv</code> - Loads environment variables from .env file</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h3><span class="step-number">5</span>Update package.json</h3>
+        <p>Add ES modules support and scripts:</p>
+        <pre><code>{
+  "name": "notes-app-backend",
+  "version": "1.0.0",
+  "description": "Backend for MERN notes app",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.3"
+  }
+}</code></pre>
+        <div class="note">
+            <span class="note-title">Note:</span> The <code>"type": "module"</code> allows you to use modern ES6 import/export syntax instead of require().
+        </div>
+    </div>
+
+    <div class="step">
+        <h3><span class="step-number">6</span>Create Folder Structure</h3>
+        <pre><code>mkdir -p src/models src/routes</code></pre>
+    </div>
+
+    <div class="step">
+        <h3><span class="step-number">7</span>Start MongoDB</h3>
+        <p>Make sure MongoDB is running on your machine:</p>
+        <pre><code><span class="comment"># On macOS (if installed via Homebrew)</span>
+brew services start mongodb-community
+
+<span class="comment"># On Windows (run as Administrator)</span>
+net start MongoDB
+
+<span class="comment"># On Linux</span>
+sudo systemctl start mongod</code></pre>
+    </div>
+
+    <div class="step">
+        <h3><span class="step-number">8</span>Run the Server</h3>
+        <pre><code><span class="comment"># For development (auto-restarts on file changes)</span>
+npm run dev
+
+<span class="comment"># For production</span>
+npm start</code></pre>
+        <p>You should see:</p>
+        <pre><code>Server running on port 5001
+Connected to MongoDB</code></pre>
+    </div>
+
+    <h2>Code Explanation</h2>
+
+    <h3>1. server.js - Main Entry Point</h3>
+    <p>This is the heart of your backend application:</p>
+
+    <pre><code><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">'express'</span>
+<span class="keyword">import</span> mongoose <span class="keyword">from</span> <span class="string">'mongoose'</span>
+<span class="keyword">import</span> cors <span class="keyword">from</span> <span class="string">'cors'</span>
+<span class="keyword">import</span> noteRoutes <span class="keyword">from</span> <span class="string">'./routes/noteRoutes.js'</span>
+<span class="keyword">import</span> dotenv <span class="keyword">from</span> <span class="string">'dotenv'</span>
+
+dotenv.<span class="function">config</span>()
+
+<span class="keyword">const</span> MONGODB_URI = <span class="string">'mongodb://localhost:27017/notesapp'</span>
+<span class="keyword">const</span> PORT = <span class="string">5001</span>
+
+<span class="keyword">const</span> app = <span class="function">express</span>()
+
+<span class="comment">// Middleware</span>
+app.<span class="function">use</span>(<span class="function">cors</span>())
+app.<span class="function">use</span>(express.<span class="function">json</span>())
+
+<span class="comment">// Routes</span>
+app.<span class="function">use</span>(<span class="string">'/api/notes'</span>, noteRoutes)
+
+<span class="comment">// MongoDB connection</span>
+mongoose
+  .<span class="function">connect</span>(MONGODB_URI)
+  .<span class="function">then</span>(() => console.<span class="function">log</span>(<span class="string">'Connected to MongoDB'</span>))
+  .<span class="function">catch</span>((err) => console.<span class="function">error</span>(<span class="string">'MongoDB connection error:'</span>, err))
+
+app.<span class="function">listen</span>(PORT, () => {
+  console.<span class="function">log</span>(<span class="string">`Server running on port ${PORT}`</span>)
+})</code></pre>
+
+    <h4>Line-by-Line Breakdown:</h4>
+    <ul>
+        <li><strong>Lines 1-5:</strong> Import all required modules using ES6 syntax</li>
+        <li><strong>Line 7:</strong> <code>dotenv.config()</code> loads environment variables from a .env file</li>
+        <li><strong>Lines 9-10:</strong> Define MongoDB connection string and server port</li>
+        <li><strong>Line 12:</strong> Create an Express application instance</li>
+        <li><strong>Line 15:</strong> <code>cors()</code> middleware allows cross-origin requests (frontend can call backend)</li>
+        <li><strong>Line 16:</strong> <code>express.json()</code> parses incoming JSON data from requests</li>
+        <li><strong>Line 19:</strong> Mount note routes at <code>/api/notes</code> endpoint</li>
+        <li><strong>Lines 22-25:</strong> Connect to MongoDB database</li>
+        <li><strong>Lines 27-29:</strong> Start the server and listen for requests</li>
+    </ul>
+
+    <h3>2. Note.js - Database Model</h3>
+    <p>Defines the structure of a Note in the database:</p>
+
+    <pre><code><span class="keyword">import</span> mongoose <span class="keyword">from</span> <span class="string">'mongoose'</span>
+
+<span class="keyword">const</span> noteSchema = <span class="keyword">new</span> mongoose.<span class="function">Schema</span>(
+  {
+    title: {
+      type: String,
+      required: <span class="keyword">true</span>,
+      trim: <span class="keyword">true</span>,
+    },
+    content: {
+      type: String,
+      required: <span class="keyword">true</span>,
+    },
+    color: {
+      type: String,
+      default: <span class="string">'#fff3e0'</span>,
+    },
+  },
+  {
+    timestamps: <span class="keyword">true</span>,
+  }
+)
+
+<span class="keyword">export default</span> mongoose.<span class="function">model</span>(<span class="string">'Note'</span>, noteSchema)</code></pre>
+
+    <h4>Schema Fields Explained:</h4>
+    <ul>
+        <li><strong>title:</strong> Required string, whitespace trimmed automatically</li>
+        <li><strong>content:</strong> Required string for the note body</li>
+        <li><strong>color:</strong> Optional string with default value (light orange)</li>
+        <li><strong>timestamps: true:</strong> Automatically adds <code>createdAt</code> and <code>updatedAt</code> fields</li>
+    </ul>
+
+    <h3>3. noteRoutes.js - API Endpoints</h3>
+    <p>Handles all CRUD (Create, Read, Update, Delete) operations:</p>
+
+    <pre><code><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">'express'</span>
+<span class="keyword">import</span> Note <span class="keyword">from</span> <span class="string">'../models/Note.js'</span>
+
+<span class="keyword">const</span> router = express.<span class="function">Router</span>()</code></pre>
+
+    <h4>GET /api/notes - Get All Notes</h4>
+    <pre><code>router.<span class="function">get</span>(<span class="string">'/'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> notes = <span class="keyword">await</span> Note.<span class="function">find</span>()
+    res.<span class="function">json</span>(notes)
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(500).<span class="function">json</span>({ message: error.message })
+  }
+})</code></pre>
+    <p><strong>What it does:</strong> Fetches all notes from database and returns them as JSON.</p>
+
+    <h4>GET /api/notes/:id - Get Single Note</h4>
+    <pre><code>router.<span class="function">get</span>(<span class="string">'/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> note = <span class="keyword">await</span> Note.<span class="function">findById</span>(req.params.id)
+    <span class="keyword">if</span> (!note) {
+      <span class="keyword">return</span> res.<span class="function">status</span>(404).<span class="function">json</span>({ message: <span class="string">'Note not found'</span> })
+    }
+    res.<span class="function">json</span>(note)
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(500).<span class="function">json</span>({ message: error.message })
+  }
+})</code></pre>
+    <p><strong>What it does:</strong> Finds a specific note by its ID. Returns 404 if not found.</p>
+
+    <h4>POST /api/notes - Create New Note</h4>
+    <pre><code>router.<span class="function">post</span>(<span class="string">'/'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">const</span> note = <span class="keyword">new</span> <span class="function">Note</span>({
+    title: req.body.title,
+    content: req.body.content,
+    color: req.body.color
+  })
+
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> newNote = <span class="keyword">await</span> note.<span class="function">save</span>()
+    res.<span class="function">status</span>(201).<span class="function">json</span>(newNote)
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(400).<span class="function">json</span>({ message: error.message })
+  }
+})</code></pre>
+    <p><strong>What it does:</strong> Creates a new note with data from request body. Returns 201 (Created) on success.</p>
+
+    <h4>PUT /api/notes/:id - Update Note</h4>
+    <pre><code>router.<span class="function">put</span>(<span class="string">'/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> note = <span class="keyword">await</span> Note.<span class="function">findById</span>(req.params.id)
+    <span class="keyword">if</span> (!note) {
+      <span class="keyword">return</span> res.<span class="function">status</span>(404).<span class="function">json</span>({ message: <span class="string">'Note not found'</span> })
+    }
+
+    <span class="keyword">if</span> (req.body.title) note.title = req.body.title
+    <span class="keyword">if</span> (req.body.content) note.content = req.body.content
+    <span class="keyword">if</span> (req.body.color) note.color = req.body.color
+
+    <span class="keyword">const</span> updatedNote = <span class="keyword">await</span> note.<span class="function">save</span>()
+    res.<span class="function">json</span>(updatedNote)
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(400).<span class="function">json</span>({ message: error.message })
+  }
+})</code></pre>
+    <p><strong>What it does:</strong> Updates only the fields that are provided in the request.</p>
+
+    <h4>DELETE /api/notes/:id - Delete Note</h4>
+    <pre><code>router.<span class="function">delete</span>(<span class="string">'/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> note = <span class="keyword">await</span> Note.<span class="function">findById</span>(req.params.id)
+    <span class="keyword">if</span> (!note) {
+      <span class="keyword">return</span> res.<span class="function">status</span>(404).<span class="function">json</span>({ message: <span class="string">'Note not found'</span> })
+    }
+
+    <span class="keyword">await</span> note.<span class="function">deleteOne</span>()
+    res.<span class="function">json</span>({ message: <span class="string">'Note deleted'</span> })
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(500).<span class="function">json</span>({ message: error.message })
+  }
+})</code></pre>
+    <p><strong>What it does:</strong> Removes a note from the database permanently.</p>
+
+    <h2>API Endpoints Summary</h2>
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <thead>
+            <tr style="background: #3498db; color: white;">
+                <th style="padding: 12px; text-align: left;">Method</th>
+                <th style="padding: 12px; text-align: left;">Endpoint</th>
+                <th style="padding: 12px; text-align: left;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background: #f8f9fa;">
+                <td style="padding: 12px;"><code>GET</code></td>
+                <td style="padding: 12px;"><code>/api/notes</code></td>
+                <td style="padding: 12px;">Get all notes</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px;"><code>GET</code></td>
+                <td style="padding: 12px;"><code>/api/notes/:id</code></td>
+                <td style="padding: 12px;">Get single note by ID</td>
+            </tr>
+            <tr style="background: #f8f9fa;">
+                <td style="padding: 12px;"><code>POST</code></td>
+                <td style="padding: 12px;"><code>/api/notes</code></td>
+                <td style="padding: 12px;">Create new note</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px;"><code>PUT</code></td>
+                <td style="padding: 12px;"><code>/api/notes/:id</code></td>
+                <td style="padding: 12px;">Update existing note</td>
+            </tr>
+            <tr style="background: #f8f9fa;">
+                <td style="padding: 12px;"><code>DELETE</code></td>
+                <td style="padding: 12px;"><code>/api/notes/:id</code></td>
+                <td style="padding: 12px;">Delete note</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Testing the API</h2>
+    <p>You can test your API using tools like <strong>Postman</strong>, <strong>Thunder Client</strong> (VS Code extension), or <strong>curl</strong>:</p>
+
+    <h4>Create a Note (POST)</h4>
+    <pre><code>curl -X POST http://localhost:5001/api/notes \
+  -H "Content-Type: application/json" \
+  -d '{"title": "My First Note", "content": "Hello World!"}'</code></pre>
+
+    <h4>Get All Notes (GET)</h4>
+    <pre><code>curl http://localhost:5001/api/notes</code></pre>
+
+    <h4>Update a Note (PUT)</h4>
+    <pre><code>curl -X PUT http://localhost:5001/api/notes/YOUR_NOTE_ID \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Updated Title"}'</code></pre>
+
+    <h4>Delete a Note (DELETE)</h4>
+    <pre><code>curl -X DELETE http://localhost:5001/api/notes/YOUR_NOTE_ID</code></pre>
+
+    <h2>Common Issues & Solutions</h2>
+
+    <div class="note">
+        <span class="note-title">MongoDB Connection Error</span>
+        <p>Make sure MongoDB is running. Check with: <code>mongosh</code> or <code>mongo</code></p>
+    </div>
+
+    <div class="note">
+        <span class="note-title">Port Already in Use</span>
+        <p>Change the PORT in server.js or kill the process using that port:</p>
+        <code>lsof -i :5001</code> then <code>kill -9 PID</code>
+    </div>
+
+    <div class="note">
+        <span class="note-title">CORS Errors in Browser</span>
+        <p>Make sure <code>cors()</code> middleware is added before your routes.</p>
+    </div>
+
+    <h2>Next Steps</h2>
+    <ul>
+        <li>Add user authentication (JWT tokens)</li>
+        <li>Add input validation (express-validator)</li>
+        <li>Add pagination for large note collections</li>
+        <li>Deploy to cloud (Heroku, Railway, or Render)</li>
+        <li>Use MongoDB Atlas for cloud database</li>
+    </ul>
+
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #7f8c8d;">
+        <p>Notes App Backend Setup Guide</p>
+        <p>Generated for your MERN Stack learning journey</p>
+    </div>
+</body>
+</html>

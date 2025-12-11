@@ -1,0 +1,94 @@
+.note-form {
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.note-input {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  font-size: 18px;
+  font-weight: 600;
+  background: transparent;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.note-input:focus {
+  outline: none;
+  border-bottom-color: #333;
+}
+
+.note-textarea {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  font-size: 14px;
+  background: transparent;
+  resize: vertical;
+  min-height: 100px;
+  box-sizing: border-box;
+}
+
+.note-textarea:focus {
+  outline: none;
+}
+
+.color-picker {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.color-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.color-btn:hover {
+  transform: scale(1.1);
+}
+
+.color-btn.selected {
+  border-color: #333;
+  transform: scale(1.1);
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn-submit {
+  background-color: #333;
+  color: white;
+}
+
+.btn-submit:hover {
+  background-color: #555;
+}
+
+.btn-cancel {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-cancel:hover {
+  background-color: #d0d0d0;
+}

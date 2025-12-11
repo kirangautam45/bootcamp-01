@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App Frontend Setup Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #fff;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #61dafb;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            border-left: 4px solid #61dafb;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        h4 {
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        .step {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .step-number {
+            background: #27ae60;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        code {
+            background: #ecf0f1;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        .comment {
+            color: #7f8c8d;
+        }
+        .keyword {
+            color: #e74c3c;
+        }
+        .string {
+            color: #27ae60;
+        }
+        .function {
+            color: #3498db;
+        }
+        .component {
+            color: #61dafb;
+        }
+        .note {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .note-title {
+            font-weight: bold;
+            color: #1565c0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .warning-title {
+            font-weight: bold;
+            color: #856404;
+        }
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .tech-item {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .tech-item strong {
+            display: block;
+            color: #2980b9;
+            margin-bottom: 5px;
+        }
+        ul {
+            margin: 15px 0 15px 30px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .file-structure {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre;
+        }
+        .component-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .component-box h4 {
+            color: white;
+            margin: 0 0 5px 0;
+        }
+        .component-box p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #61dafb;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        @media print {
+            body {
+                padding: 20px;
+            }
+            .step {
+                break-inside: avoid;
+            }
+            pre {
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Notes App Frontend Setup Guide</h1>
+
+    <p>This guide will walk you through setting up and understanding the React frontend for the Notes application. You'll learn how React components work together to create a complete user interface.</p>
+
+    <h2>Technology Stack Overview</h2>
+
+    <div class="tech-stack">
+        <div class="tech-item">
+            <strong>React 19</strong>
+            JavaScript library for building UIs
+        </div>
+        <div class="tech-item">
+            <strong>Vite</strong>
+            Fast build tool & dev server
+        </div>
+        <div class="tech-item">
+            <strong>Lucide React</strong>
+            Icon library for React
+        </div>
+        <div class="tech-item">
+            <strong>CSS</strong>
+            Styling with vanilla CSS
+        </div>
+    </div>
+
+    <h2>Project Structure</h2>
+
+    <div class="file-structure">
+notes-app/
+  frontend/
+    src/
+      components/
+        NoteCard.jsx      # Individual note display
+        NoteCard.css
+        NoteForm.jsx      # Create/Edit form
+        NoteForm.css
+        NoteList.jsx      # Grid of notes
+        NoteList.css
+      App.jsx             # Main component
+      App.css             # Global styles
+      main.jsx            # Entry point
+    package.json          # Dependencies
+    vite.config.js        # Vite configuration
+    </div>
+
+    <h2>Step-by-Step Setup</h2>
+
+    <div class="step">
+        <h3><span class="step-number">1</span>Prerequisites</h3>
+        <p>Make sure you have installed:</p>
+        <ul>
+            <li><strong>Node.js</strong> (v18 or higher) - Download from <code>nodejs.org</code></li>
+            <li><strong>Backend running</strong> - The backend server should be running on port 5001</li>
+        </ul>
+        <p>Verify Node.js installation:</p>
+        <pre><code>node --version
+npm --version</code></pre>
+    </div>
+
+    <div class="step">
+        <h3><span class="step-number">2</span>Create React Project with Vite</h3>
+        <pre><code><span class="comment"># Navigate to notes-app folder</span>
+cd notes-app
+
+<span class="comment"># Create React project using Vite</span>
+npm create vite@latest frontend -- --template react
+
+<span class="comment"># Navigate into frontend folder</span>
+cd frontend</code></pre>
+        <div class="note">
+            <span class="note-title">Why Vite?</span>
+            <p>Vite is much faster than Create React App. It uses native ES modules and provides instant hot module replacement (HMR).</p>
+        </div>
+    </div>
+
+    <div class="step">
+        <h3><span class="step-number">3</span>Install Dependencies</h3>
+        <pre><code>npm install</code></pre>
+        <p>Then install the icon library:</p>
+        <pre><code>npm install lucide-react</code></pre>
+        <p><strong>What lucide-react provides:</strong> Beautiful, customizable icons like Pencil and Trash2 for edit/delete buttons.</p>
+    </div>
+
+    <div class="step">
+        <h3><span class="step-number">4</span>Clean Up Default Files</h3>
+        <p>Delete these unnecessary files from <code>src/</code>:</p>
+        <ul>
+            <li><code>App.css</code> (we'll create our own)</li>
+            <li><code>index.css</code></li>
+            <li>Any default assets in <code>assets/</code></li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h3><span class="step-number">5</span>Create Component Folders</h3>
+        <pre><code>mkdir src/components</code></pre>
+    </div>
+
+    <div class="step">
+        <h3><span class="step-number">6</span>Start Development Server</h3>
+        <pre><code>npm run dev</code></pre>
+        <p>Open your browser at <code>http://localhost:5173</code></p>
+    </div>
+
+    <h2>Understanding package.json</h2>
+
+    <pre><code>{
+  <span class="string">"name"</span>: <span class="string">"frontend"</span>,
+  <span class="string">"private"</span>: <span class="keyword">true</span>,
+  <span class="string">"version"</span>: <span class="string">"0.0.0"</span>,
+  <span class="string">"type"</span>: <span class="string">"module"</span>,
+  <span class="string">"scripts"</span>: {
+    <span class="string">"dev"</span>: <span class="string">"vite"</span>,           <span class="comment">// Start dev server</span>
+    <span class="string">"build"</span>: <span class="string">"vite build"</span>,  <span class="comment">// Build for production</span>
+    <span class="string">"lint"</span>: <span class="string">"eslint ."</span>,     <span class="comment">// Check code quality</span>
+    <span class="string">"preview"</span>: <span class="string">"vite preview"</span> <span class="comment">// Preview production build</span>
+  },
+  <span class="string">"dependencies"</span>: {
+    <span class="string">"lucide-react"</span>: <span class="string">"^0.556.0"</span>,  <span class="comment">// Icon library</span>
+    <span class="string">"react"</span>: <span class="string">"^19.2.0"</span>,          <span class="comment">// React library</span>
+    <span class="string">"react-dom"</span>: <span class="string">"^19.2.0"</span>      <span class="comment">// React DOM rendering</span>
+  }
+}</code></pre>
+
+    <h2>Component Architecture</h2>
+
+    <p>The app follows a <strong>component-based architecture</strong>. Here's how the components connect:</p>
+
+    <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
+        <div style="background: #333; color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+            <strong>App.jsx</strong> (Parent - manages all state & API calls)
+        </div>
+        <div style="font-size: 24px; margin: 10px 0;">↓</div>
+        <div style="display: flex; gap: 20px; justify-content: center;">
+            <div style="background: #61dafb; padding: 15px; border-radius: 8px; flex: 1;">
+                <strong>NoteForm.jsx</strong><br>Create & Edit notes
+            </div>
+            <div style="background: #61dafb; padding: 15px; border-radius: 8px; flex: 1;">
+                <strong>NoteList.jsx</strong><br>Display all notes
+            </div>
+        </div>
+        <div style="font-size: 24px; margin: 10px 0;">↓</div>
+        <div style="background: #27ae60; color: white; padding: 15px; border-radius: 8px; width: 200px; margin: 0 auto;">
+            <strong>NoteCard.jsx</strong><br>Individual note
+        </div>
+    </div>
+
+    <h2>Code Explanation</h2>
+
+    <h3>1. main.jsx - Entry Point</h3>
+    <p>This is where React mounts to the DOM:</p>
+
+    <pre><code><span class="keyword">import</span> { StrictMode } <span class="keyword">from</span> <span class="string">'react'</span>
+<span class="keyword">import</span> { createRoot } <span class="keyword">from</span> <span class="string">'react-dom/client'</span>
+<span class="keyword">import</span> <span class="component">App</span> <span class="keyword">from</span> <span class="string">'./App.jsx'</span>
+
+<span class="function">createRoot</span>(document.<span class="function">getElementById</span>(<span class="string">'root'</span>)).<span class="function">render</span>(
+  &lt;<span class="component">StrictMode</span>&gt;
+    &lt;<span class="component">App</span> /&gt;
+  &lt;/<span class="component">StrictMode</span>&gt;
+)</code></pre>
+
+    <h4>Line-by-Line:</h4>
+    <ul>
+        <li><strong>StrictMode:</strong> Helps find potential problems in your code during development</li>
+        <li><strong>createRoot:</strong> Creates a React root for rendering (React 18+ API)</li>
+        <li><strong>document.getElementById('root'):</strong> Finds the div in index.html where React mounts</li>
+    </ul>
+
+    <h3>2. App.jsx - Main Component</h3>
+    <p>This is the heart of your application that manages all state and API communication:</p>
+
+    <pre><code><span class="keyword">import</span> { useState, useEffect } <span class="keyword">from</span> <span class="string">'react'</span>;
+<span class="keyword">import</span> <span class="component">NoteForm</span> <span class="keyword">from</span> <span class="string">'./components/NoteForm'</span>;
+<span class="keyword">import</span> <span class="component">NoteList</span> <span class="keyword">from</span> <span class="string">'./components/NoteList'</span>;
+<span class="keyword">import</span> <span class="string">'./App.css'</span>;
+
+<span class="keyword">const</span> API_URL = <span class="string">'http://localhost:5001/api/notes'</span>;
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="comment">// STATE MANAGEMENT</span>
+  <span class="keyword">const</span> [notes, setNotes] = <span class="function">useState</span>([]);          <span class="comment">// All notes array</span>
+  <span class="keyword">const</span> [editingNote, setEditingNote] = <span class="function">useState</span>(<span class="keyword">null</span>); <span class="comment">// Note being edited</span>
+  <span class="keyword">const</span> [loading, setLoading] = <span class="function">useState</span>(<span class="keyword">true</span>);      <span class="comment">// Loading state</span>
+
+  <span class="comment">// Fetch notes when component mounts</span>
+  <span class="function">useEffect</span>(() => {
+    <span class="function">fetchNotes</span>();
+  }, []); <span class="comment">// Empty array = run once on mount</span>
+  ...
+}</code></pre>
+
+    <h4>React Hooks Explained:</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Hook</th>
+                <th>Purpose</th>
+                <th>In This App</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>useState</code></td>
+                <td>Manage component state</td>
+                <td>Stores notes, editing state, loading state</td>
+            </tr>
+            <tr>
+                <td><code>useEffect</code></td>
+                <td>Side effects (API calls, subscriptions)</td>
+                <td>Fetches notes when app loads</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>API Functions in App.jsx:</h4>
+
+    <div class="component-box">
+        <h4>fetchNotes() - GET all notes</h4>
+        <p>Runs on component mount, fetches all notes from backend</p>
+    </div>
+
+    <pre><code><span class="keyword">const</span> fetchNotes = <span class="keyword">async</span> () => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(API_URL);
+    <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+    <span class="function">setNotes</span>(data);  <span class="comment">// Update state with fetched notes</span>
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="function">error</span>(<span class="string">'Error fetching notes:'</span>, error);
+  } <span class="keyword">finally</span> {
+    <span class="function">setLoading</span>(<span class="keyword">false</span>);  <span class="comment">// Stop loading spinner</span>
+  }
+};</code></pre>
+
+    <div class="component-box">
+        <h4>addNote(note) - POST new note</h4>
+        <p>Creates a new note and adds it to the beginning of the list</p>
+    </div>
+
+    <pre><code><span class="keyword">const</span> addNote = <span class="keyword">async</span> (note) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(API_URL, {
+      method: <span class="string">'POST'</span>,
+      headers: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> },
+      body: JSON.<span class="function">stringify</span>(note)
+    });
+    <span class="keyword">const</span> newNote = <span class="keyword">await</span> response.<span class="function">json</span>();
+    <span class="function">setNotes</span>([newNote, ...notes]); <span class="comment">// Add to front of array</span>
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="function">error</span>(<span class="string">'Error adding note:'</span>, error);
+  }
+};</code></pre>
+
+    <div class="component-box">
+        <h4>updateNote(id, updatedNote) - PUT update</h4>
+        <p>Updates an existing note by its ID</p>
+    </div>
+
+    <pre><code><span class="keyword">const</span> updateNote = <span class="keyword">async</span> (id, updatedNote) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`${API_URL}/${id}`</span>, {
+      method: <span class="string">'PUT'</span>,
+      headers: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> },
+      body: JSON.<span class="function">stringify</span>(updatedNote)
+    });
+    <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+    <span class="comment">// Replace old note with updated one in state</span>
+    <span class="function">setNotes</span>(notes.<span class="function">map</span>(note => note._id === id ? data : note));
+    <span class="function">setEditingNote</span>(<span class="keyword">null</span>); <span class="comment">// Clear editing mode</span>
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="function">error</span>(<span class="string">'Error updating note:'</span>, error);
+  }
+};</code></pre>
+
+    <div class="component-box">
+        <h4>deleteNote(id) - DELETE note</h4>
+        <p>Removes a note from database and state</p>
+    </div>
+
+    <pre><code><span class="keyword">const</span> deleteNote = <span class="keyword">async</span> (id) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`${API_URL}/${id}`</span>, { method: <span class="string">'DELETE'</span> });
+    <span class="comment">// Filter out deleted note from state</span>
+    <span class="function">setNotes</span>(notes.<span class="function">filter</span>(note => note._id !== id));
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="function">error</span>(<span class="string">'Error deleting note:'</span>, error);
+  }
+};</code></pre>
+
+    <h4>JSX Return (UI Structure):</h4>
+
+    <pre><code><span class="keyword">return</span> (
+  &lt;div className=<span class="string">"app"</span>&gt;
+    &lt;header className=<span class="string">"header"</span>&gt;
+      &lt;h1&gt;Notes App&lt;/h1&gt;
+    &lt;/header&gt;
+
+    &lt;main className=<span class="string">"main"</span>&gt;
+      <span class="comment">{/* Form component with conditional props */}</span>
+      &lt;<span class="component">NoteForm</span>
+        key={editingNote?._id || <span class="string">'new'</span>}  <span class="comment">// Reset form when switching modes</span>
+        onSubmit={editingNote
+          ? (note) => <span class="function">updateNote</span>(editingNote._id, note)
+          : addNote}  <span class="comment">// Different function based on mode</span>
+        editingNote={editingNote}
+        onCancel={() => <span class="function">setEditingNote</span>(<span class="keyword">null</span>)}
+      /&gt;
+
+      {loading ? (
+        &lt;p className=<span class="string">"loading"</span>&gt;Loading notes...&lt;/p&gt;
+      ) : (
+        &lt;<span class="component">NoteList</span>
+          notes={notes}
+          onEdit={setEditingNote}  <span class="comment">// Pass state setter</span>
+          onDelete={deleteNote}
+        /&gt;
+      )}
+    &lt;/main&gt;
+
+    &lt;footer className=<span class="string">"footer"</span>&gt;
+      &lt;p&gt;3 Days MERN Stack Workshop&lt;/p&gt;
+    &lt;/footer&gt;
+  &lt;/div&gt;
+);</code></pre>
+
+    <h3>3. NoteForm.jsx - Create/Edit Form</h3>
+    <p>Handles both creating new notes and editing existing ones:</p>
+
+    <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>
+<span class="keyword">import</span> <span class="string">'./NoteForm.css'</span>
+
+<span class="comment">// Available color options for notes</span>
+<span class="keyword">const</span> COLORS = [
+  <span class="string">'#ffffff'</span>,   <span class="comment">// White</span>
+  <span class="string">'#fff9c4'</span>,   <span class="comment">// Yellow</span>
+  <span class="string">'#c8e6c9'</span>,   <span class="comment">// Green</span>
+  <span class="string">'#bbdefb'</span>,   <span class="comment">// Blue</span>
+  <span class="string">'#d1c4e9'</span>,   <span class="comment">// Purple</span>
+  <span class="string">'#ffccbc'</span>,   <span class="comment">// Orange</span>
+]
+
+<span class="keyword">function</span> <span class="function">NoteForm</span>({ onSubmit, editingNote, onCancel }) {
+  <span class="comment">// Initialize state with editing values or defaults</span>
+  <span class="keyword">const</span> [title, setTitle] = <span class="function">useState</span>(editingNote?.title || <span class="string">''</span>)
+  <span class="keyword">const</span> [content, setContent] = <span class="function">useState</span>(editingNote?.content || <span class="string">''</span>)
+  <span class="keyword">const</span> [color, setColor] = <span class="function">useState</span>(editingNote?.color || <span class="string">'#ffffff'</span>)
+
+  <span class="keyword">const</span> handleSubmit = (e) => {
+    e.<span class="function">preventDefault</span>()  <span class="comment">// Prevent page reload</span>
+    <span class="keyword">if</span> (!title.<span class="function">trim</span>() || !content.<span class="function">trim</span>()) <span class="keyword">return</span> <span class="comment">// Validation</span>
+
+    <span class="function">onSubmit</span>({ title, content, color })
+
+    <span class="comment">// Clear form only if adding new note (not editing)</span>
+    <span class="keyword">if</span> (!editingNote) {
+      <span class="function">setTitle</span>(<span class="string">''</span>)
+      <span class="function">setContent</span>(<span class="string">''</span>)
+      <span class="function">setColor</span>(<span class="string">'#ffffff'</span>)
+    }
+  }
+  ...
+}</code></pre>
+
+    <h4>Key Concepts:</h4>
+    <ul>
+        <li><strong>Optional Chaining (?.):</strong> <code>editingNote?.title</code> safely accesses properties even if editingNote is null</li>
+        <li><strong>Controlled Components:</strong> Form inputs are controlled by React state (value + onChange)</li>
+        <li><strong>Conditional Rendering:</strong> Cancel button only shows when editing</li>
+    </ul>
+
+    <h4>Color Picker Implementation:</h4>
+    <pre><code>&lt;div className=<span class="string">"color-picker"</span>&gt;
+  {COLORS.<span class="function">map</span>((c) => (
+    &lt;button
+      key={c}
+      type=<span class="string">"button"</span>  <span class="comment">// Prevents form submission</span>
+      className={<span class="string">`color-btn ${color === c ? 'selected' : ''}`</span>}
+      style={{ backgroundColor: c }}
+      onClick={() => <span class="function">setColor</span>(c)}
+    /&gt;
+  ))}
+&lt;/div&gt;</code></pre>
+
+    <h3>4. NoteList.jsx - Notes Grid</h3>
+    <p>Displays all notes in a grid layout:</p>
+
+    <pre><code><span class="keyword">import</span> <span class="component">NoteCard</span> <span class="keyword">from</span> <span class="string">'./NoteCard'</span>;
+<span class="keyword">import</span> <span class="string">'./NoteList.css'</span>;
+
+<span class="keyword">function</span> <span class="function">NoteList</span>({ notes, onEdit, onDelete }) {
+  <span class="comment">// Show message if no notes exist</span>
+  <span class="keyword">if</span> (notes.length === 0) {
+    <span class="keyword">return</span> (
+      &lt;div className=<span class="string">"empty-state"</span>&gt;
+        &lt;p&gt;No notes yet. Create your first note!&lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  <span class="comment">// Map through notes and render NoteCard for each</span>
+  <span class="keyword">return</span> (
+    &lt;div className=<span class="string">"note-list"</span>&gt;
+      {notes.<span class="function">map</span>((note) => (
+        &lt;<span class="component">NoteCard</span>
+          key={note._id}  <span class="comment">// Unique key for React's reconciliation</span>
+          note={note}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+
+<span class="keyword">export default</span> NoteList;</code></pre>
+
+    <h4>CSS Grid Layout:</h4>
+    <pre><code>.note-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);  <span class="comment">/* 4 equal columns */</span>
+  gap: 20px;  <span class="comment">/* Space between cards */</span>
+}</code></pre>
+
+    <h3>5. NoteCard.jsx - Individual Note</h3>
+    <p>Displays a single note with edit/delete actions:</p>
+
+    <pre><code><span class="keyword">import</span> { Pencil, Trash2 } <span class="keyword">from</span> <span class="string">'lucide-react'</span>;  <span class="comment">// Icon imports</span>
+<span class="keyword">import</span> <span class="string">'./NoteCard.css'</span>;
+
+<span class="keyword">function</span> <span class="function">NoteCard</span>({ note, onEdit, onDelete }) {
+  <span class="comment">// Helper function to format date</span>
+  <span class="keyword">const</span> formatDate = (dateString) => {
+    <span class="keyword">return new</span> <span class="function">Date</span>(dateString).<span class="function">toLocaleDateString</span>(<span class="string">'en-US'</span>, {
+      month: <span class="string">'short'</span>,
+      day: <span class="string">'numeric'</span>,
+      year: <span class="string">'numeric'</span>,
+    });
+  };
+
+  <span class="keyword">return</span> (
+    &lt;section
+      className=<span class="string">"note-card"</span>
+      style={{ backgroundColor: note.color || <span class="string">'#ffffff'</span> }}
+    &gt;
+      &lt;h3 className=<span class="string">"note-title"</span>&gt;{note.title}&lt;/h3&gt;
+      &lt;p className=<span class="string">"note-content"</span>&gt;{note.content}&lt;/p&gt;
+
+      &lt;div className=<span class="string">"note-footer"</span>&gt;
+        &lt;span className=<span class="string">"note-date"</span>&gt;
+          {<span class="function">formatDate</span>(note.createdAt)}
+        &lt;/span&gt;
+
+        &lt;div className=<span class="string">"note-actions"</span>&gt;
+          &lt;button onClick={() => <span class="function">onEdit</span>(note)} className=<span class="string">"action-btn"</span>&gt;
+            &lt;<span class="component">Pencil</span> size={18} /&gt;
+          &lt;/button&gt;
+          &lt;button onClick={() => <span class="function">onDelete</span>(note._id)} className=<span class="string">"action-btn"</span>&gt;
+            &lt;<span class="component">Trash2</span> size={18} /&gt;
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+
+<span class="keyword">export default</span> NoteCard;</code></pre>
+
+    <h2>Data Flow Diagram</h2>
+
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <p><strong>1. User clicks "Add Note":</strong></p>
+        <p style="margin-left: 20px;">NoteForm → onSubmit() → App.addNote() → fetch POST → setNotes() → UI updates</p>
+
+        <p><strong>2. User clicks Edit icon:</strong></p>
+        <p style="margin-left: 20px;">NoteCard → onEdit(note) → App.setEditingNote() → NoteForm receives editingNote prop → Form fills with data</p>
+
+        <p><strong>3. User submits edit:</strong></p>
+        <p style="margin-left: 20px;">NoteForm → onSubmit() → App.updateNote() → fetch PUT → setNotes() → UI updates</p>
+
+        <p><strong>4. User clicks Delete icon:</strong></p>
+        <p style="margin-left: 20px;">NoteCard → onDelete(id) → App.deleteNote() → fetch DELETE → setNotes(filter) → UI updates</p>
+    </div>
+
+    <h2>Important React Concepts Used</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Concept</th>
+                <th>Where Used</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Props</strong></td>
+                <td>All components</td>
+                <td>Pass data & functions between components</td>
+            </tr>
+            <tr>
+                <td><strong>State (useState)</strong></td>
+                <td>App.jsx, NoteForm.jsx</td>
+                <td>Manage dynamic data that changes</td>
+            </tr>
+            <tr>
+                <td><strong>useEffect</strong></td>
+                <td>App.jsx</td>
+                <td>Fetch data on component mount</td>
+            </tr>
+            <tr>
+                <td><strong>Conditional Rendering</strong></td>
+                <td>App.jsx, NoteList.jsx, NoteForm.jsx</td>
+                <td>Show different UI based on state</td>
+            </tr>
+            <tr>
+                <td><strong>List Rendering (map)</strong></td>
+                <td>NoteList.jsx, NoteForm.jsx</td>
+                <td>Render arrays as components</td>
+            </tr>
+            <tr>
+                <td><strong>Event Handling</strong></td>
+                <td>All components</td>
+                <td>Respond to user interactions</td>
+            </tr>
+            <tr>
+                <td><strong>Controlled Components</strong></td>
+                <td>NoteForm.jsx</td>
+                <td>Form inputs controlled by state</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Common Commands</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Command</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>npm run dev</code></td>
+                <td>Start development server (hot reload)</td>
+            </tr>
+            <tr>
+                <td><code>npm run build</code></td>
+                <td>Create production build</td>
+            </tr>
+            <tr>
+                <td><code>npm run preview</code></td>
+                <td>Preview production build locally</td>
+            </tr>
+            <tr>
+                <td><code>npm run lint</code></td>
+                <td>Check code for errors/warnings</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Troubleshooting</h2>
+
+    <div class="warning">
+        <span class="warning-title">CORS Error</span>
+        <p>If you see "Access-Control-Allow-Origin" error, make sure the backend is running with <code>cors()</code> middleware enabled.</p>
+    </div>
+
+    <div class="warning">
+        <span class="warning-title">Notes Not Loading</span>
+        <p>Check that:</p>
+        <ul>
+            <li>Backend is running on port 5001</li>
+            <li>MongoDB is running</li>
+            <li>API_URL in App.jsx matches backend URL</li>
+        </ul>
+    </div>
+
+    <div class="warning">
+        <span class="warning-title">Form Not Clearing</span>
+        <p>Make sure the <code>key</code> prop is set on NoteForm. This forces React to remount the component when switching between add/edit modes.</p>
+    </div>
+
+    <h2>Next Steps</h2>
+    <ul>
+        <li>Add search/filter functionality</li>
+        <li>Add user authentication</li>
+        <li>Make the layout responsive for mobile</li>
+        <li>Add drag-and-drop to reorder notes</li>
+        <li>Add categories/tags for notes</li>
+        <li>Deploy to Vercel or Netlify</li>
+    </ul>
+
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #7f8c8d;">
+        <p>Notes App Frontend Setup Guide</p>
+        <p>Generated for your MERN Stack learning journey</p>
+    </div>
+</body>
+</html>
