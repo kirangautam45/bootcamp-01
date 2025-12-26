@@ -6,9 +6,12 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const MONGODB_URI =
-  process.env.MONGODB_URI || 'mongodb://localhost:27017/notesapp'
+
+const MONGODB_URI = 'mongodb://localhost:27017/notesapp'
 const PORT = process.env.PORT || 5001
+
+console.log('MONGODB_URI:', process.env.MONGODB_URI)
+
 
 const app = express()
 
@@ -23,6 +26,8 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/notes', noteRoutes)
+
+
 
 // MongoDB connection
 mongoose

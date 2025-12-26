@@ -26,18 +26,18 @@ A RESTful API server built with Node.js, Express, and MongoDB.
 
 Before setting up the backend, make sure you have:
 
-| Requirement | Version | Check Command      | Download Link                                  |
-| ----------- | ------- | ------------------ | ---------------------------------------------- |
-| Node.js     | v18+    | `node --version`   | [nodejs.org](https://nodejs.org/)              |
-| npm         | v9+     | `npm --version`    | Comes with Node.js                             |
+| Requirement | Version | Check Command      | Download Link                                                 |
+| ----------- | ------- | ------------------ | ------------------------------------------------------------- |
+| Node.js     | v18+    | `node --version`   | [nodejs.org](https://nodejs.org/)                             |
+| npm         | v9+     | `npm --version`    | Comes with Node.js                                            |
 | MongoDB     | v6+     | `mongod --version` | [mongodb.com](https://www.mongodb.com/try/download/community) |
 
 ### Optional Tools (Recommended)
 
-| Tool            | Purpose                          | Download Link                                              |
-| --------------- | -------------------------------- | ---------------------------------------------------------- |
+| Tool            | Purpose                          | Download Link                                                       |
+| --------------- | -------------------------------- | ------------------------------------------------------------------- |
 | MongoDB Compass | GUI to view and manage your data | [mongodb.com/compass](https://www.mongodb.com/try/download/compass) |
-| Postman         | Test API endpoints               | [postman.com/downloads](https://www.postman.com/downloads/) |
+| Postman         | Test API endpoints               | [postman.com/downloads](https://www.postman.com/downloads/)         |
 
 ---
 
@@ -118,12 +118,12 @@ This will install the following packages:
 npm install express mongoose cors dotenv
 ```
 
-| Package  | Install Command       | Purpose                                           |
-| -------- | --------------------- | ------------------------------------------------- |
-| express  | `npm install express` | Web framework for creating HTTP server and routes |
-| mongoose | `npm install mongoose`| MongoDB ODM (Object Document Mapper)              |
-| cors     | `npm install cors`    | Enable Cross-Origin Resource Sharing              |
-| dotenv   | `npm install dotenv`  | Load environment variables from .env file         |
+| Package  | Install Command        | Purpose                                           |
+| -------- | ---------------------- | ------------------------------------------------- |
+| express  | `npm install express`  | Web framework for creating HTTP server and routes |
+| mongoose | `npm install mongoose` | MongoDB ODM (Object Document Mapper)              |
+| cors     | `npm install cors`     | Enable Cross-Origin Resource Sharing              |
+| dotenv   | `npm install dotenv`   | Load environment variables from .env file         |
 
 ---
 

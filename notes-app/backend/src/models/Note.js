@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-
 const noteSchema = new mongoose.Schema(
   {
     title: {
@@ -15,10 +14,7 @@ const noteSchema = new mongoose.Schema(
       type: String,
       default: '#fff3e0',
     },
-  },
-  {
-    timestamps: true,
-  }
+  }, {
+    timestamps: true,}
 )
-
 export default mongoose.model('Note', noteSchema)
