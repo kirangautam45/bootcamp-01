@@ -232,38 +232,122 @@ docker-compose up -d --build
 
 Use this method for active development without Docker.
 
-#### Step 1: Install Backend Dependencies
+#### Step 1: Install MongoDB Locally
+
+Choose your operating system:
+
+**macOS (using Homebrew):**
+```bash
+# Install Homebrew if you haven't already
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Tap MongoDB repository
+brew tap mongodb/brew
+
+# Install MongoDB Community Edition
+brew install mongodb-community@7.0
+
+# Start MongoDB as a service
+brew services start mongodb-community@7.0
+
+# Verify installation
+mongosh --version
+```
+
+**Ubuntu/Debian Linux:**
+```bash
+# Import MongoDB public GPG key
+curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg \
+   --dearmor
+
+# Add MongoDB repository
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | \
+   sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+
+# Update package list
+sudo apt-get update
+
+# Install MongoDB
+sudo apt-get install -y mongodb-org
+
+# Start MongoDB service
+sudo systemctl start mongod
+sudo systemctl enable mongod
+
+# Verify installation
+mongosh --version
+```
+
+**Windows:**
+```powershell
+# Download MongoDB Community Server from:
+# https://www.mongodb.com/try/download/community
+
+# Run the installer (.msi file)
+# Choose "Complete" installation
+# Install as a Windows Service (recommended)
+
+# MongoDB will start automatically
+# Verify installation in PowerShell:
+mongosh --version
+```
+
+**Alternative: MongoDB Atlas (Cloud Database - Free Tier)**
+```bash
+# Sign up at https://www.mongodb.com/cloud/atlas
+# Create a free M0 cluster
+# Get your connection string
+# Update MONGODB_URI in .env with the Atlas connection string
+```
+
+#### Step 2: Verify MongoDB is Running
+
+```bash
+# Check if MongoDB is running
+mongosh
+
+# You should see:
+# Current Mongosh Log ID: ...
+# Connecting to: mongodb://127.0.0.1:27017/?directConnection=true
+# Using MongoDB: 7.0.x
+
+# Exit mongosh
+exit
+```
+
+#### Step 3: Install Backend Dependencies
 ```bash
 cd notes-app/backend
 npm install
 ```
 
-#### Step 2: Configure Environment
+#### Step 4: Configure Environment
 Create `.env` in `backend/` directory:
 ```env
 MONGODB_URI=mongodb://localhost:27017/notesapp
 PORT=5001
 ```
 
-#### Step 3: Install Frontend Dependencies
+#### Step 5: Install Frontend Dependencies
 ```bash
 cd ../frontend
 npm install
 ```
 
-#### Step 4: Start MongoDB
+#### Step 7: Start MongoDB (if not running as service)
 Open a new terminal:
 ```bash
+# If MongoDB is NOT running as a service
 mongod
+
+# Or if MongoDB is running as a system service
+brew services start mongodb-community@7.0  # macOS
+sudo systemctl start mongod                # Linux
+net start MongoDB                          # Windows (as Administrator)
 ```
 
-Or if MongoDB is running as a system service:
-```bash
-brew services start mongodb-community  # macOS
-sudo systemctl start mongod            # Linux
-```
-
-#### Step 5: Start Backend Server
+#### Step 8: Start Backend Server
 Open a new terminal:
 ```bash
 cd notes-app/backend
@@ -276,7 +360,7 @@ Server running on port 5001
 Connected to MongoDB
 ```
 
-#### Step 6: Start Frontend Dev Server
+#### Step 9: Start Frontend Dev Server
 Open a new terminal:
 ```bash
 cd notes-app/frontend
@@ -291,8 +375,52 @@ VITE v7.2.4  ready in 234 ms
 ➜  Network: use --host to expose
 ```
 
-#### Step 7: Access Application
+#### Step 10: Access Application
 Navigate to [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+### MongoDB Management Commands
+
+Useful commands for managing MongoDB locally:
+
+```bash
+# Check MongoDB status
+brew services list                         # macOS
+sudo systemctl status mongod               # Linux
+sc query MongoDB                          # Windows
+
+# Stop MongoDB
+brew services stop mongodb-community@7.0  # macOS
+sudo systemctl stop mongod                # Linux
+net stop MongoDB                          # Windows (as Administrator)
+
+# Restart MongoDB
+brew services restart mongodb-community@7.0  # macOS
+sudo systemctl restart mongod                # Linux
+net stop MongoDB && net start MongoDB        # Windows (as Administrator)
+
+# Connect to MongoDB shell
+mongosh
+
+# View all databases
+show dbs
+
+# Use the notes database
+use notesapp
+
+# View all collections
+show collections
+
+# View all notes
+db.notes.find()
+
+# Delete all notes
+db.notes.deleteMany({})
+
+# Drop the entire database
+db.dropDatabase()
+```
 
 ---
 
@@ -647,6 +775,161 @@ For production, update this to your deployed backend URL.
 
 ---
 
+## Development Tools
+
+### MongoDB Compass - Database GUI
+
+MongoDB Compass is the official GUI for MongoDB. It provides a visual interface to explore and manipulate your data.
+
+**Installation:**
+
+**macOS:**
+```bash
+# Using Homebrew
+brew install --cask mongodb-compass
+
+# Or download from https://www.mongodb.com/try/download/compass
+```
+
+**Linux:**
+```bash
+# Download the .deb or .rpm package
+wget https://downloads.mongodb.com/compass/mongodb-compass_1.40.4_amd64.deb
+sudo dpkg -i mongodb-compass_1.40.4_amd64.deb
+
+# Or use snap
+sudo snap install mongodb-compass
+```
+
+**Windows:**
+```powershell
+# Download the installer from:
+# https://www.mongodb.com/try/download/compass
+# Run the .exe installer
+```
+
+**Using MongoDB Compass:**
+1. Open MongoDB Compass
+2. Connect to your local MongoDB:
+   - **Connection String:** `mongodb://localhost:27017`
+   - Click "Connect"
+3. Navigate to the `notesapp` database
+4. Browse the `notes` collection
+5. View, edit, and delete documents visually
+
+**Features:**
+- Visual query builder
+- Document validation
+- Index management
+- Performance insights
+- Data import/export
+
+---
+
+### Postman - API Testing
+
+Postman is a powerful tool for testing REST APIs.
+
+**Installation:**
+
+**macOS:**
+```bash
+brew install --cask postman
+```
+
+**Linux:**
+```bash
+# Download and install
+wget https://dl.pstmn.io/download/latest/linux64 -O postman.tar.gz
+sudo tar -xzf postman.tar.gz -C /opt
+sudo ln -s /opt/Postman/Postman /usr/bin/postman
+```
+
+**Windows:**
+```powershell
+# Download from: https://www.postman.com/downloads/
+# Run the installer
+```
+
+**Quick Start with Postman:**
+
+1. Create a new collection called "Notes API"
+2. Add requests for each endpoint:
+
+**GET All Notes:**
+```
+GET http://localhost:5001/api/notes
+```
+
+**POST Create Note:**
+```
+POST http://localhost:5001/api/notes
+Headers: Content-Type: application/json
+Body (raw JSON):
+{
+  "title": "Test Note",
+  "content": "This is a test note",
+  "color": "#ffeb3b"
+}
+```
+
+**PUT Update Note:**
+```
+PUT http://localhost:5001/api/notes/{note_id}
+Headers: Content-Type: application/json
+Body (raw JSON):
+{
+  "title": "Updated Note"
+}
+```
+
+**DELETE Note:**
+```
+DELETE http://localhost:5001/api/notes/{note_id}
+```
+
+---
+
+### React DevTools - Browser Extension
+
+React DevTools helps debug React applications by inspecting component hierarchies and state.
+
+**Installation:**
+
+**Chrome:**
+```
+Visit: https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi
+Click "Add to Chrome"
+```
+
+**Firefox:**
+```
+Visit: https://addons.mozilla.org/en-US/firefox/addon/react-devtools/
+Click "Add to Firefox"
+```
+
+**Edge:**
+```
+Visit: https://microsoftedge.microsoft.com/addons/detail/react-developer-tools/gpphkfbcpidddadnkolkpfckpihlkkil
+Click "Get"
+```
+
+**Using React DevTools:**
+1. Open your app in the browser: `http://localhost:5173`
+2. Open Developer Tools (F12 or Cmd+Option+I on Mac)
+3. Click on the "Components" or "Profiler" tab
+4. Inspect component props, state, and hooks
+5. Track component re-renders and performance
+
+**Key Features:**
+- Component tree inspection
+- Props and state viewing/editing
+- Hook inspection
+- Performance profiling
+- Highlight component updates
+
+---
+
 ## Troubleshooting
 
 ### Common Issues
@@ -755,23 +1038,31 @@ npm install
 ## Resources
 
 ### Official Documentation
-- [MongoDB Documentation](https://www.mongodb.com/docs/)
-- [Express.js Guide](https://expressjs.com/)
-- [React Documentation](https://react.dev/)
-- [Mongoose Documentation](https://mongoosejs.com/)
-- [Vite Documentation](https://vitejs.dev/)
-- [Docker Documentation](https://docs.docker.com/)
+- [MongoDB Documentation](https://www.mongodb.com/docs/) - Complete MongoDB guide
+- [MongoDB Installation Guide](https://www.mongodb.com/docs/manual/installation/) - Install MongoDB locally
+- [Express.js Guide](https://expressjs.com/) - Express framework docs
+- [React Documentation](https://react.dev/) - Official React docs
+- [Mongoose Documentation](https://mongoosejs.com/) - MongoDB ODM for Node.js
+- [Vite Documentation](https://vitejs.dev/) - Next generation frontend tooling
+- [Docker Documentation](https://docs.docker.com/) - Container platform docs
 
 ### Learning Resources
-- [MERN Stack Tutorial](https://www.mongodb.com/languages/mern-stack-tutorial)
-- [RESTful API Design](https://restfulapi.net/)
-- [React Hooks Guide](https://react.dev/reference/react)
-- [Docker for Beginners](https://docker-curriculum.com/)
+- [MERN Stack Tutorial](https://www.mongodb.com/languages/mern-stack-tutorial) - Full stack guide
+- [RESTful API Design](https://restfulapi.net/) - API best practices
+- [React Hooks Guide](https://react.dev/reference/react) - Modern React patterns
+- [Docker for Beginners](https://docker-curriculum.com/) - Docker fundamentals
+- [MongoDB University](https://university.mongodb.com/) - Free MongoDB courses
 
-### Tools & Libraries
-- [MongoDB Compass](https://www.mongodb.com/products/compass) - GUI for MongoDB
-- [Postman](https://www.postman.com/) - API testing
-- [React DevTools](https://react.dev/learn/react-developer-tools) - Browser extension
+### Development Tools (See detailed setup in Development Tools section above)
+- [MongoDB Compass](https://www.mongodb.com/try/download/compass) - Official MongoDB GUI
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) - Cloud database (free tier available)
+- [Postman](https://www.postman.com/downloads/) - API development and testing
+- [React DevTools](https://react.dev/learn/react-developer-tools) - Browser extension for React debugging
+- [VS Code](https://code.visualstudio.com/) - Recommended code editor with extensions:
+  - ES7+ React/Redux/React-Native snippets
+  - MongoDB for VS Code
+  - REST Client (alternative to Postman)
+  - Docker extension
 
 ---
 
