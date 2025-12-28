@@ -1,8 +1,8 @@
+import dotenv from 'dotenv'
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import noteRoutes from './routes/noteRoutes.js'
-import dotenv from 'dotenv'
 
 dotenv.config()
 

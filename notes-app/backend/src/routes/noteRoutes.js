@@ -5,7 +5,7 @@ import Note from '../models/Note.js'
 const router = express.Router()
 
 // Get all notes
-router.get('/', async (req, res) => {
+router.get('/', async (_req, res) => {
   try {
     const notes = await Note.find()
     res.json(notes)

@@ -13,7 +13,7 @@ function App() {
       ...note,
       createdAt: new Date().toISOString()
     }
-    setNotes([newNote, ...notes])
+    setNotes([...notes, newNote])
   }
 
   const updateNote = (id, updatedNote) => {

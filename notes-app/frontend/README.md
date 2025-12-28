@@ -13,12 +13,14 @@ A React application built with Vite for creating, viewing, editing, and deleting
   - [vite.config.js](#2-viteconfigjs)
   - [index.html](#3-indexhtml)
   - [main.jsx](#4-srcmainjsx)
-  - [index.css](#5-srcindexcss)
-  - [App.jsx](#6-srcappjsx)
-  - [App.css](#7-srcappcss)
-  - [NoteForm.jsx](#8-srccomponentsnoteformjsx)
+  - [App.jsx](#5-srcappjsx)
+  - [App.css](#6-srcappcss)
+  - [NoteForm.jsx](#7-srccomponentsnoteformjsx)
+  - [NoteForm.css](#8-srccomponentsnoteformcss)
   - [NoteList.jsx](#9-srccomponentsnotelistjsx)
-  - [NoteCard.jsx](#10-srccomponentsnotecardcss)
+  - [NoteList.css](#10-srccomponentsnotelistcss)
+  - [NoteCard.jsx](#11-srccomponentsnotecardcss)
+  - [NoteCard.css](#12-srccomponentsnotecardcss-1)
 - [React Concepts Explained](#react-concepts-explained)
 - [Data Flow](#data-flow)
 - [Component Hierarchy](#component-hierarchy)
@@ -40,8 +42,7 @@ frontend/
 │   │   └── NoteList.css
 │   ├── App.jsx             # Main component
 │   ├── App.css
-│   ├── main.jsx            # React entry point
-│   └── index.css           # Global styles
+│   └── main.jsx            # React entry point
 ├── index.html              # HTML template
 ├── package.json
 └── vite.config.js          # Vite configuration
@@ -51,11 +52,12 @@ frontend/
 
 ## Dependencies Explained
 
-| Package    | Purpose                                            |
-|------------|----------------------------------------------------|
-| react      | Core React library for building UI components      |
-| react-dom  | React renderer for web browsers                    |
-| vite       | Fast build tool and development server             |
+| Package       | Purpose                                              |
+|---------------|------------------------------------------------------|
+| react         | Core React library for building UI components        |
+| react-dom     | React renderer for web browsers                      |
+| lucide-react  | Beautiful icon library for React                     |
+| vite          | Fast build tool and development server               |
 
 ---
 
@@ -72,15 +74,24 @@ frontend/
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.x.x",
-    "react-dom": "^18.x.x"
+    "lucide-react": "^0.556.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.x.x",
-    "vite": "^5.x.x"
+    "@eslint/js": "^9.39.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "vite": "^7.2.4"
   }
 }
 ```
@@ -103,30 +114,37 @@ frontend/
 "scripts": {
   "dev": "vite",
   "build": "vite build",
+  "lint": "eslint .",
   "preview": "vite preview"
 },
 ```
 - **`npm run dev`**: Start development server with hot reload
 - **`npm run build`**: Create production build in `dist/` folder
+- **`npm run lint`**: Check code for errors and style issues
 - **`npm run preview`**: Preview the production build locally
 
 ```json
 "dependencies": {
-  "react": "^18.x.x",
-  "react-dom": "^18.x.x"
+  "lucide-react": "^0.556.0",
+  "react": "^19.2.0",
+  "react-dom": "^19.2.0"
 },
 ```
 - **`react`**: Core React library (components, hooks, state)
 - **`react-dom`**: Connects React to browser DOM
+- **`lucide-react`**: Modern icon library (Pencil, Trash2, Loader2 icons)
 
 ```json
 "devDependencies": {
-  "@vitejs/plugin-react": "^4.x.x",
-  "vite": "^5.x.x"
+  "@vitejs/plugin-react": "^5.1.1",
+  "vite": "^7.2.4",
+  "eslint": "^9.39.1",
+  ...
 }
 ```
 - **`vite`**: Build tool (like webpack but faster)
 - **`@vitejs/plugin-react`**: Vite plugin for React support (JSX, Fast Refresh)
+- **`eslint`**: Code linting tool
 - **devDependencies**: Only needed during development, not in production
 
 ---
@@ -137,6 +155,7 @@ frontend/
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
 })
@@ -171,13 +190,13 @@ export default defineConfig({
 ### 3. `index.html`
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/notes.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <title>Notes App</title>
   </head>
   <body>
     <div id="root"></div>
@@ -187,6 +206,19 @@ export default defineConfig({
 ```
 
 #### Key Parts:
+
+```html
+<link rel="icon" type="image/svg+xml" href="/notes.svg" />
+```
+- **What**: Browser tab icon (favicon)
+- **`/notes.svg`**: Custom notes icon for the app
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+```
+- **What**: Makes the page responsive on mobile
+- **`width=device-width`**: Match screen width
+- **`initial-scale=1.0`**: No zoom by default
 
 ```html
 <div id="root"></div>
@@ -210,13 +242,12 @@ export default defineConfig({
 ```javascript
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
-  </StrictMode>,
+  </StrictMode>
 )
 ```
 
@@ -240,13 +271,6 @@ import { createRoot } from 'react-dom/client'
 - **`createRoot`**: Creates a React root for rendering (React 18+ API)
 
 ```javascript
-import './index.css'
-```
-- **What**: Import global CSS file
-- **Why no variable**: CSS is applied globally, no need to assign
-- **Effect**: Styles apply to entire application
-
-```javascript
 import App from './App.jsx'
 ```
 - **What**: Import the main App component
@@ -264,7 +288,7 @@ createRoot(document.getElementById('root'))
 .render(
   <StrictMode>
     <App />
-  </StrictMode>,
+  </StrictMode>
 )
 ```
 - **`.render()`**: Render React elements to the DOM
@@ -274,131 +298,61 @@ createRoot(document.getElementById('root'))
 
 ---
 
-### 5. `src/index.css`
-
-```css
-:root {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #213547;
-  background-color: #f5f5f5;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-#root {
-  min-height: 100vh;
-}
-```
-
-#### Line-by-Line:
-
-```css
-:root {
-```
-- **What**: CSS pseudo-class for document root
-- **Same as**: `html` selector but higher specificity
-- **Why use it**: Define CSS custom properties (variables)
-
-```css
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-```
-- **What**: Font stack (fallback list)
-- **How it works**: Browser tries each font, uses first available
-- **`system-ui`**: OS default font (San Francisco on Mac, Segoe on Windows)
-- **Why this order**: Modern → Apple → Windows → Generic
-
-```css
-  line-height: 1.5;
-```
-- **What**: Space between lines of text
-- **`1.5`**: 1.5 times the font size
-- **Why**: Improves readability
-
-```css
-  color: #213547;
-```
-- **What**: Default text color
-- **`#213547`**: Dark blue-gray (easier on eyes than pure black)
-
-```css
-  background-color: #f5f5f5;
-```
-- **What**: Page background color
-- **`#f5f5f5`**: Light gray (softer than pure white)
-
-```css
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-```
-- **What**: Font rendering optimizations
-- **`-webkit-`**: Safari/Chrome on Mac
-- **`-moz-`**: Firefox on Mac
-- **Effect**: Sharper, lighter text on Mac
-
-```css
-body {
-  margin: 0;
-```
-- **What**: Remove default body margin
-- **Why**: Browsers add default margins; we want full control
-
-```css
-  min-height: 100vh;
-```
-- **What**: Minimum height of viewport
-- **`vh`**: Viewport height units
-- **`100vh`**: 100% of visible screen height
-
-```css
-#root {
-  min-height: 100vh;
-}
-```
-- **What**: Ensure React root fills screen
-- **Why**: Allows children to use `height: 100%`
-
----
-
-### 6. `src/App.jsx`
+### 5. `src/App.jsx`
 
 This is the main component that orchestrates the entire application.
 
 ```javascript
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
+import { Loader2 } from 'lucide-react'
+import NoteForm from './components/NoteForm'
+import NoteList from './components/NoteList'
+import './App.css'
+```
+
+#### Imports Explained:
+
+```javascript
+import { useState, useEffect } from 'react'
 ```
 - **What**: Import React hooks
 - **`useState`**: Create and manage state variables
 - **`useEffect`**: Run code on component lifecycle events
 
 ```javascript
-import NoteForm from './components/NoteForm';
-import NoteList from './components/NoteList';
+import { Loader2 } from 'lucide-react'
+```
+- **What**: Import loading spinner icon
+- **`Loader2`**: Animated spinner component from lucide-react
+
+```javascript
+import NoteForm from './components/NoteForm'
+import NoteList from './components/NoteList'
 ```
 - **What**: Import child components
 - **Why separate files**: Organize code, reusability, maintainability
 
 ```javascript
-import './App.css';
+import './App.css'
 ```
 - **What**: Import component-specific styles
-- **CSS Modules alternative**: Could use `styles.module.css` for scoped styles
+- **Effect**: Styles apply to this component
+
+---
+
+#### API Configuration:
 
 ```javascript
-const API_URL = 'http://localhost:5001/api/notes';
+const API_URL = `${import.meta.env.VITE_API_URL}/notes`
 ```
 - **What**: Base URL for backend API
-- **Why constant**: Easy to change, used in multiple places
-- **Production**: Would change to deployed backend URL
+- **`import.meta.env.VITE_API_URL`**: Environment variable from `.env` file
+- **Why env variable**: Different URLs for development vs production
+- **Example**: `http://localhost:5001/api/notes`
+
+---
+
+#### Component Function:
 
 ```javascript
 function App() {
@@ -407,8 +361,12 @@ function App() {
 - **Function component**: Simpler than class components
 - **Convention**: Component names are PascalCase
 
+---
+
+#### State Variables:
+
 ```javascript
-  const [notes, setNotes] = useState([]);
+const [notes, setNotes] = useState([])
 ```
 - **What**: Create state for notes array
 - **`useState([])`**: Initial value is empty array
@@ -418,23 +376,27 @@ function App() {
 - **When `setNotes` called**: Component re-renders with new value
 
 ```javascript
-  const [editingNote, setEditingNote] = useState(null);
+const [editingNote, setEditingNote] = useState(null)
 ```
 - **What**: Track which note is being edited
 - **`null`**: No note is being edited
 - **When editing**: Contains the note object being edited
 
 ```javascript
-  const [loading, setLoading] = useState(true);
+const [loading, setLoading] = useState(true)
 ```
 - **What**: Track loading state
 - **`true`**: Initially loading (fetching data)
 - **Why**: Show loading indicator to user
 
+---
+
+#### useEffect Hook:
+
 ```javascript
-  useEffect(() => {
-    fetchNotes();
-  }, []);
+useEffect(() => {
+  fetchNotes()
+}, [])
 ```
 - **What**: Run code when component mounts
 - **`useEffect(callback, dependencies)`**:
@@ -444,66 +406,91 @@ function App() {
 - **No array**: Run on every render
 - **With values `[x]`**: Run when `x` changes
 
+---
+
+#### fetchNotes Function:
+
 ```javascript
-  const fetchNotes = async () => {
+const fetchNotes = async () => {
+  try {
+    const response = await fetch(API_URL)
+    const data = await response.json()
+    setNotes(data)
+  } catch (error) {
+    console.error('Error fetching notes:', error)
+  } finally {
+    setLoading(false)
+  }
+}
+```
+
+**Line-by-line breakdown:**
+
+```javascript
+const fetchNotes = async () => {
 ```
 - **What**: Define async function to fetch notes
 - **`async`**: Can use `await` inside
 
 ```javascript
-    try {
-      const response = await fetch(API_URL);
+const response = await fetch(API_URL)
 ```
 - **`fetch(API_URL)`**: Make HTTP GET request
 - **`await`**: Wait for response
 - **`response`**: Response object (not the data yet)
 
 ```javascript
-      const data = await response.json();
+const data = await response.json()
 ```
 - **`response.json()`**: Parse JSON body
 - **Returns Promise**: Need to await
 - **`data`**: Now contains array of notes
 
 ```javascript
-      setNotes(data);
+setNotes(data)
 ```
 - **What**: Update state with fetched notes
 - **Effect**: Component re-renders, NoteList receives new data
 
 ```javascript
-    } catch (error) {
-      console.error('Error fetching notes:', error);
-    } finally {
-      setLoading(false);
-    }
+} catch (error) {
+  console.error('Error fetching notes:', error)
+} finally {
+  setLoading(false)
+}
 ```
 - **`catch`**: Handle network/parsing errors
 - **`finally`**: Runs regardless of success/failure
 - **`setLoading(false)`**: Stop showing loading indicator
-
-```javascript
-  };
-```
-- **End of fetchNotes function**
 
 ---
 
 #### addNote Function:
 
 ```javascript
-  const addNote = async (note) => {
+const addNote = async (note) => {
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(note),
+    })
+    const newNote = await response.json()
+    setNotes([newNote, ...notes])
+  } catch (error) {
+    console.error('Error adding note:', error)
+  }
+}
 ```
-- **What**: Function to create new note
-- **`note`**: Object with title, content, color (from form)
+
+**Key parts:**
 
 ```javascript
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(note)
-      });
+const response = await fetch(API_URL, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(note),
+})
 ```
 - **`fetch(URL, options)`**: Make request with options
 - **`method: 'POST'`**: HTTP method for creating
@@ -513,13 +500,7 @@ function App() {
   - `JSON.stringify(note)`: Convert object to JSON string
 
 ```javascript
-      const newNote = await response.json();
-```
-- **What**: Parse the created note from response
-- **Contains**: `_id`, `title`, `content`, `color`, `timestamps`
-
-```javascript
-      setNotes([newNote, ...notes]);
+setNotes([newNote, ...notes])
 ```
 - **What**: Add new note to state
 - **`[newNote, ...notes]`**: Create new array with:
@@ -528,40 +509,38 @@ function App() {
 - **Why new array**: React detects change by reference
   - `notes.push(newNote)` wouldn't trigger re-render
 
-```javascript
-    } catch (error) {
-      console.error('Error adding note:', error);
-    }
-  };
-```
-- **Handle errors**: Log if something fails
-
 ---
 
 #### updateNote Function:
 
 ```javascript
-  const updateNote = async (id, updatedNote) => {
+const updateNote = async (id, updatedNote) => {
+  try {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedNote),
+    })
+    const data = await response.json()
+    setNotes(notes.map((note) => (note._id === id ? data : note)))
+    setEditingNote(null)
+  } catch (error) {
+    console.error('Error updating note:', error)
+  }
+}
 ```
-- **What**: Function to update existing note
-- **`id`**: Which note to update
-- **`updatedNote`**: New data
+
+**Key parts:**
 
 ```javascript
-    try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedNote)
-      });
+`${API_URL}/${id}`
 ```
-- **`${API_URL}/${id}`**: Template literal for URL with ID
-  - Example: `http://localhost:5001/api/notes/abc123`
+- **Template literal**: URL with ID
+- **Example**: `http://localhost:5001/api/notes/abc123`
 - **`method: 'PUT'`**: HTTP method for updating
 
 ```javascript
-      const data = await response.json();
-      setNotes(notes.map(note => note._id === id ? data : note));
+setNotes(notes.map((note) => (note._id === id ? data : note)))
 ```
 - **What**: Update the note in state array
 - **`notes.map()`**: Create new array, transforming each item
@@ -571,103 +550,96 @@ function App() {
 - **Result**: New array with one note replaced
 
 ```javascript
-      setEditingNote(null);
+setEditingNote(null)
 ```
 - **What**: Clear editing state
 - **Effect**: Form switches back to "create" mode
-
-```javascript
-    } catch (error) {
-      console.error('Error updating note:', error);
-    }
-  };
-```
 
 ---
 
 #### deleteNote Function:
 
 ```javascript
-  const deleteNote = async (id) => {
+const deleteNote = async (id) => {
+  try {
+    await fetch(`${API_URL}/${id}`, { method: 'DELETE' })
+    setNotes(notes.filter((note) => note._id !== id))
+  } catch (error) {
+    console.error('Error deleting note:', error)
+  }
+}
 ```
-- **What**: Function to delete a note
-- **`id`**: Which note to delete
+
+**Key parts:**
 
 ```javascript
-    try {
-      await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+await fetch(`${API_URL}/${id}`, { method: 'DELETE' })
 ```
 - **`method: 'DELETE'`**: HTTP method for deletion
 - **No body needed**: ID is in URL
 - **No response parsing**: Just need to know it succeeded
 
 ```javascript
-      setNotes(notes.filter(note => note._id !== id));
+setNotes(notes.filter((note) => note._id !== id))
 ```
 - **What**: Remove note from state
 - **`notes.filter()`**: Create new array excluding deleted note
 - **Logic**: Keep notes where `_id !== id` (all except deleted)
-
-```javascript
-    } catch (error) {
-      console.error('Error deleting note:', error);
-    }
-  };
-```
 
 ---
 
 #### JSX Return:
 
 ```javascript
-  return (
-    <div className="app">
+return (
+  <div className='app'>
+    <header className='header'>
+      <h1>Notes App</h1>
+    </header>
 ```
 - **What**: JSX returned by component
 - **`className`**: React uses `className` instead of `class`
   - `class` is reserved word in JavaScript
-
-```javascript
-      <header className="header">
-        <h1>Notes App</h1>
-      </header>
-```
-- **What**: Page header
 - **Semantic HTML**: `<header>` indicates header section
 
 ```javascript
-      <main className="main">
+    <main className='main'>
+      <NoteForm
+        key={editingNote?._id || 'new'}
+        onSubmit={
+          editingNote ? (note) => updateNote(editingNote._id, note) : addNote
+        }
+        editingNote={editingNote}
+        onCancel={() => setEditingNote(null)}
+      />
 ```
-- **`<main>`**: Primary content area
-- **Semantic HTML**: Helps accessibility and SEO
+
+**NoteForm props explained:**
 
 ```javascript
-        <NoteForm
-          onSubmit={editingNote ? (note) => updateNote(editingNote._id, note) : addNote}
-          editingNote={editingNote}
-          onCancel={() => setEditingNote(null)}
-        />
+key={editingNote?._id || 'new'}
 ```
-- **What**: Render NoteForm component with props
-- **Props are like function arguments**
+- **What**: React key for component identity
+- **`editingNote?._id`**: Optional chaining - get `_id` if `editingNote` exists
+- **`|| 'new'`**: Fallback to 'new' if no editing note
+- **Why**: Forces React to recreate component when switching modes
 
-**`onSubmit` prop:**
 ```javascript
-onSubmit={editingNote ? (note) => updateNote(editingNote._id, note) : addNote}
+onSubmit={
+  editingNote ? (note) => updateNote(editingNote._id, note) : addNote
+}
 ```
 - **Ternary operator**: `condition ? valueIfTrue : valueIfFalse`
 - **If `editingNote` exists**: Pass function that calls `updateNote`
 - **If `editingNote` is null**: Pass `addNote` function directly
 - **Effect**: Form submits to different handlers based on mode
 
-**`editingNote` prop:**
 ```javascript
 editingNote={editingNote}
 ```
 - **What**: Pass the note being edited (or null)
 - **NoteForm uses this**: To pre-fill form fields
 
-**`onCancel` prop:**
 ```javascript
 onCancel={() => setEditingNote(null)}
 ```
@@ -675,21 +647,30 @@ onCancel={() => setEditingNote(null)}
 - **Arrow function**: Creates new function that calls `setEditingNote(null)`
 - **When called**: Clears editing state, form resets
 
+---
+
+#### Conditional Rendering:
+
 ```javascript
-        {loading ? (
-          <p className="loading">Loading notes...</p>
-        ) : (
-          <NoteList
-            notes={notes}
-            onEdit={setEditingNote}
-            onDelete={deleteNote}
-          />
-        )}
+      {loading ? (
+        <div className='loading'>
+          <Loader2 className='animate-spin' size={32} />
+        </div>
+      ) : (
+        <NoteList
+          notes={notes}
+          onEdit={setEditingNote}
+          onDelete={deleteNote}
+        />
+      )}
 ```
-- **What**: Conditional rendering
 - **`{loading ? (...) : (...)}`**: JSX ternary
-- **If `loading` true**: Show loading message
+- **If `loading` true**: Show spinning loader icon
 - **If `loading` false**: Show NoteList
+
+**Loader2 component:**
+- **`className='animate-spin'`**: CSS class for rotation animation
+- **`size={32}`**: Icon size in pixels
 
 **NoteList props:**
 - **`notes={notes}`**: Pass notes array
@@ -697,16 +678,23 @@ onCancel={() => setEditingNote(null)}
   - When called with note: `setEditingNote(note)`
 - **`onDelete={deleteNote}`**: Pass delete function
 
-```javascript
-      </main>
-    </div>
-  );
-}
-```
-- **Closing tags**: JSX requires all tags to be closed
+---
+
+#### Footer:
 
 ```javascript
-export default App;
+      <footer className='footer'>
+        <p>3 Days MERN Stack Workshop</p>
+      </footer>
+    </main>
+  </div>
+)
+```
+- **`<footer>`**: Semantic HTML for page footer
+- **Workshop attribution**: Displayed at bottom of page
+
+```javascript
+export default App
 ```
 - **What**: Make App available for import
 - **`default`**: Main export from this file
@@ -714,7 +702,7 @@ export default App;
 
 ---
 
-### 7. `src/App.css`
+### 6. `src/App.css`
 
 ```css
 * {
@@ -730,140 +718,190 @@ export default App;
 ```css
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background-color: #f5f5f5;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
 }
 ```
-- **Reset margin**: Remove browser default
-- **Font stack**: System fonts for native look
-- **Background**: Light gray
+- **`margin: 0`**: Remove browser default margin
+- **`font-family`**: Font stack - tries each font until one works
+- **`background: linear-gradient(...)`**: Gradient background
+  - `135deg`: Angle (diagonal top-left to bottom-right)
+  - `#667eea 0%`: Blue-purple at start
+  - `#764ba2 100%`: Purple at end
 - **`min-height: 100vh`**: At least full viewport height
 
 ```css
 .app {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 ```
-- **What**: Container fills viewport
-- **Why**: Children can use percentage heights
+- **`display: flex`**: Use flexbox layout
+- **`flex-direction: column`**: Stack children vertically
+- **Why**: Allows footer to stick to bottom
 
 ```css
 .header {
-  background-color: #333;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
   color: white;
-  padding: 20px 0;
+  padding: 24px 0;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 ```
-- **`background-color: #333`**: Dark gray background
-- **`color: white`**: White text
-- **`padding: 20px 0`**: 20px top/bottom, 0 left/right
-- **`box-shadow`**: Subtle shadow below header
-  - `0`: No horizontal offset
-  - `2px`: 2px down
-  - `4px`: 4px blur
-  - `rgba(0,0,0,0.1)`: 10% black
+- **`rgba(255, 255, 255, 0.1)`**: 10% white (translucent)
+- **`backdrop-filter: blur(10px)`**: Blur content behind (glass effect)
+- **`border-bottom`**: Subtle white line
 
 ```css
 .header h1 {
   margin: 0;
-  font-size: 28px;
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 ```
-- **`.header h1`**: h1 inside header
-- **`margin: 0`**: Remove default h1 margin
-- **`font-weight: 600`**: Semi-bold
+- **`font-weight: 700`**: Bold text
+- **`letter-spacing: -0.5px`**: Slightly tighter letters
+- **`text-shadow`**: Subtle shadow below text
 
 ```css
 .main {
-  max-width: 900px;
+  max-width: 1200px;
+  width: 90%;
   margin: 0 auto;
-  padding: 30px 20px;
+  padding: 40px 20px;
+  flex: 1;
 }
 ```
-- **`max-width: 900px`**: Don't stretch beyond 900px
+- **`max-width: 1200px`**: Don't stretch beyond 1200px
+- **`width: 90%`**: 90% of parent width
 - **`margin: 0 auto`**: Center horizontally
-  - `0`: No top/bottom margin
-  - `auto`: Equal left/right margin (centering)
-- **`padding`**: Inner spacing
+- **`flex: 1`**: Grow to fill available space
 
 ```css
 .loading {
   text-align: center;
-  color: #888;
-  font-size: 16px;
-  padding: 40px;
+  padding: 80px 20px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 ```
-- **Loading indicator styles**
-- **Gray color**: Subtle, not distracting
+- **Glass morphism style**: Translucent background with blur
+
+```css
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+```
+- **`@keyframes spin`**: Define rotation animation
+- **`from` to `to`**: Start at 0 degrees, end at 360 degrees
+- **`animation: spin 1s linear infinite`**:
+  - `spin`: Animation name
+  - `1s`: Duration
+  - `linear`: Constant speed
+  - `infinite`: Loop forever
+
+```css
+.footer {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 20px 0;
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+```
+- **`margin-top: auto`**: Push to bottom (flexbox trick)
 
 ---
 
-### 8. `src/components/NoteForm.jsx`
+### 7. `src/components/NoteForm.jsx`
 
 ```javascript
-import { useState, useEffect } from 'react';
-import './NoteForm.css';
-```
-- **Import hooks and styles**
+import { useState } from 'react'
+import './NoteForm.css'
 
-```javascript
-const COLORS = ['#ffffff', '#ffeb3b', '#4caf50', '#2196f3', '#e91e63', '#9c27b0'];
+// Color palette for notes
+const COLORS = [
+  '#ffffff',  // White
+  '#fff9c4',  // Light Yellow
+  '#c8e6c9',  // Light Green
+  '#bbdefb',  // Light Blue
+  '#d1c4e9',  // Light Purple
+  '#ffccbc',  // Light Orange
+]
 ```
-- **What**: Available color options
-- **Array of hex codes**: White, Yellow, Green, Blue, Pink, Purple
-- **Why constant**: Defined once, used for color picker
+- **`COLORS` array**: Available color options for notes
+- **Hex codes**: Each represents a pastel color
 
 ```javascript
 function NoteForm({ onSubmit, editingNote, onCancel }) {
 ```
-- **What**: Function component with destructured props
-- **`{ onSubmit, editingNote, onCancel }`**: Extract props from object
-- **Same as**: `function NoteForm(props)` then `props.onSubmit`
+- **Destructured props**:
+  - `onSubmit`: Function to call when form submits
+  - `editingNote`: Note being edited (or null)
+  - `onCancel`: Function to cancel editing
 
 ```javascript
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [color, setColor] = useState('#ffffff');
+const [title, setTitle] = useState(editingNote?.title || '')
+const [content, setContent] = useState(editingNote?.content || '')
+const [color, setColor] = useState(editingNote?.color || '#ffffff')
 ```
-- **Local state for form fields**
-- **Why local**: Form owns its input values
-- **Empty strings**: Start with blank form
+- **Initialize state from `editingNote`**
+- **`editingNote?.title`**: Optional chaining - get title if editingNote exists
+- **`|| ''`**: Default to empty string if undefined
+- **Why this approach**: When component receives `key` prop, it remounts with new initial values
+
+---
+
+#### handleSubmit Function:
 
 ```javascript
-  useEffect(() => {
-    if (editingNote) {
-      setTitle(editingNote.title);
-      setContent(editingNote.content);
-      setColor(editingNote.color || '#ffffff');
-    } else {
-      setTitle('');
-      setContent('');
-      setColor('#ffffff');
-    }
-  }, [editingNote]);
+const handleSubmit = (e) => {
+  e.preventDefault()
+  if (!title.trim() || !content.trim()) return
+
+  onSubmit({ title, content, color })
+
+  if (!editingNote) {
+    setTitle('')
+    setContent('')
+    setColor('#ffffff')
+  }
+}
 ```
-- **What**: Sync form with editingNote prop
-- **`[editingNote]`**: Run when editingNote changes
-- **If editing**: Pre-fill form with note's values
-- **If not editing**: Clear form (reset to empty)
-- **`editingNote.color || '#ffffff'`**: Use default if color is undefined
+
+**Line-by-line:**
 
 ```javascript
-  const handleSubmit = (e) => {
-    e.preventDefault();
+e.preventDefault()
 ```
 - **`e`**: Event object
-- **`e.preventDefault()`**: Stop default form submission
+- **Purpose**: Stop default form submission
   - Default: Browser sends data to server, page reloads
   - We want: JavaScript handles it, no reload
 
 ```javascript
-    if (!title.trim() || !content.trim()) return;
+if (!title.trim() || !content.trim()) return
 ```
 - **Validation**: Don't submit if fields are empty
 - **`.trim()`**: Remove whitespace
@@ -871,29 +909,34 @@ function NoteForm({ onSubmit, editingNote, onCancel }) {
 - **`return`**: Stop function, don't submit
 
 ```javascript
-    onSubmit({ title, content, color });
+onSubmit({ title, content, color })
 ```
 - **What**: Call parent's onSubmit function
 - **`{ title, content, color }`**: Object shorthand
   - Same as `{ title: title, content: content, color: color }`
-- **Parent handles**: Creating or updating in database
 
 ```javascript
-    if (!editingNote) {
-      setTitle('');
-      setContent('');
-      setColor('#ffffff');
-    }
-  };
+if (!editingNote) {
+  setTitle('')
+  setContent('')
+  setColor('#ffffff')
+}
 ```
 - **Clear form after submit**: Only if creating new note
-- **If editing**: Parent will set editingNote to null, triggering useEffect to clear
+- **If editing**: Parent will remount component with new key
+
+---
+
+#### Form JSX:
 
 ```javascript
-  return (
-    <form className="note-form" onSubmit={handleSubmit} style={{ backgroundColor: color }}>
+return (
+  <form
+    className='note-form'
+    onSubmit={handleSubmit}
+    style={{ backgroundColor: color }}
+  >
 ```
-- **`<form>`**: HTML form element
 - **`onSubmit={handleSubmit}`**: Handle form submission
 - **`style={{ backgroundColor: color }}`**: Inline style
   - Outer `{}`: JSX expression
@@ -901,13 +944,13 @@ function NoteForm({ onSubmit, editingNote, onCancel }) {
   - Dynamic color: Form background matches selected color
 
 ```javascript
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="note-input"
-      />
+    <input
+      type='text'
+      placeholder='Title'
+      value={title}
+      onChange={(e) => setTitle(e.target.value)}
+      className='note-input'
+    />
 ```
 - **Controlled input**: React controls the value
 - **`value={title}`**: Display current state
@@ -918,71 +961,158 @@ function NoteForm({ onSubmit, editingNote, onCancel }) {
 - **Why controlled**: Single source of truth, easy validation
 
 ```javascript
-      <textarea
-        placeholder="Write your note..."
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        className="note-textarea"
-        rows="4"
-      />
+    <textarea
+      placeholder='Write your note...'
+      value={content}
+      onChange={(e) => setContent(e.target.value)}
+      className='note-textarea'
+      rows='4'
+    />
 ```
 - **Similar to input**: Controlled textarea
-- **`rows="4"`**: Initial height (4 lines)
+- **`rows='4'`**: Initial height (4 lines)
+
+---
+
+#### Color Picker:
 
 ```javascript
-      <div className="form-footer">
-        <div className="color-picker">
-          {COLORS.map((c) => (
-            <button
-              key={c}
-              type="button"
-              className={`color-btn ${color === c ? 'selected' : ''}`}
-              style={{ backgroundColor: c }}
-              onClick={() => setColor(c)}
-            />
-          ))}
-        </div>
+    <div className='color-picker'>
+      {COLORS.map((c) => (
+        <button
+          key={c}
+          type='button'
+          className={`color-btn ${color === c ? 'selected' : ''}`}
+          style={{ backgroundColor: c }}
+          onClick={() => setColor(c)}
+        />
+      ))}
+    </div>
 ```
 - **`COLORS.map()`**: Render button for each color
 - **`key={c}`**: Unique identifier (required for lists)
-- **`type="button"`**: Prevent form submission on click
+- **`type='button'`**: Prevent form submission on click
   - Default button type in form is "submit"
-- **`className={...}`**: Dynamic class
-  - Template literal with ternary
+- **`className={...}`**: Dynamic class with template literal
   - If selected: `"color-btn selected"`
   - If not: `"color-btn "`
 - **`onClick={() => setColor(c)}`**: Set color when clicked
 
-```javascript
-        <div className="form-actions">
-          {editingNote && (
-            <button type="button" onClick={onCancel} className="btn btn-cancel">
-              Cancel
-            </button>
-          )}
-```
-- **`{editingNote && (...)}`**: Conditional rendering
-  - If `editingNote` is truthy: Render the button
-  - If null/undefined: Render nothing
-- **Cancel button**: Only shows when editing
+---
+
+#### Action Buttons:
 
 ```javascript
-          <button type="submit" className="btn btn-submit">
-            {editingNote ? 'Update' : 'Add Note'}
-          </button>
+    <div className='form-actions'>
+      {editingNote && (
+        <button type='button' onClick={onCancel} className='btn btn-cancel'>
+          Cancel
+        </button>
+      )}
+      <button type='submit' className='btn btn-submit'>
+        {editingNote ? 'Update' : 'Add Note'}
+      </button>
+    </div>
 ```
-- **`type="submit"`**: Triggers form onSubmit
+- **`{editingNote && (...)}`**: Conditional rendering
+  - If `editingNote` is truthy: Render Cancel button
+  - If null/undefined: Render nothing
+- **`type='submit'`**: Triggers form onSubmit
 - **Dynamic text**: "Update" when editing, "Add Note" when creating
 
 ```javascript
-        </div>
-      </div>
-    </form>
-  );
+export default NoteForm
+```
+
+---
+
+### 8. `src/components/NoteForm.css`
+
+```css
+.note-form {
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: background-color 0.3s;
+}
+```
+- **`border-radius: 16px`**: Rounded corners
+- **`box-shadow`**: Large, soft shadow for depth
+- **`backdrop-filter: blur(10px)`**: Glassmorphism effect
+- **`transition: background-color 0.3s`**: Smooth color change
+
+```css
+.note-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-bottom: 2px solid #e0e0e0;
+  font-size: 20px;
+  font-weight: 600;
+  background: transparent;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+```
+- **`border-bottom`**: Only bottom border (underline style)
+- **`background: transparent`**: Show form's color through input
+- **`transition`**: Smooth border color change
+
+```css
+.note-input:focus {
+  outline: none;
+  border-bottom-color: #667eea;
+}
+```
+- **`:focus`**: When user clicks into input
+- **`outline: none`**: Remove default browser outline
+- **`border-bottom-color: #667eea`**: Purple accent on focus
+
+```css
+.color-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-export default NoteForm;
+.color-btn:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.color-btn.selected {
+  border-color: #667eea;
+  transform: scale(1.15);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+}
 ```
+- **`border-radius: 50%`**: Perfect circle
+- **`transform: scale(1.15)`**: Grow 15% on hover/select
+- **Selected state**: Purple border with glow effect
+
+```css
+.btn-submit {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+```
+- **Gradient background**: Matches app theme
+- **Hover effect**: Lifts up (`translateY(-2px)`) with stronger shadow
 
 ---
 
@@ -1026,6 +1156,8 @@ function NoteList({ notes, onEdit, onDelete }) {
     </div>
   );
 }
+
+export default NoteList;
 ```
 - **`notes.map()`**: Render NoteCard for each note
 - **`key={note._id}`**: MongoDB's unique ID as key
@@ -1033,32 +1165,58 @@ function NoteList({ notes, onEdit, onDelete }) {
   - Enables efficient updates (only re-render changed items)
 - **Pass props down**: note data and callback functions
 
-```javascript
-export default NoteList;
-```
+---
 
-**NoteList.css:**
+### 10. `src/components/NoteList.css`
+
 ```css
 .note-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 28px;
 }
 ```
 - **CSS Grid**: Modern layout system
-- **`repeat(auto-fill, minmax(280px, 1fr))`**:
+- **`repeat(auto-fill, minmax(320px, 1fr))`**:
   - `auto-fill`: Create as many columns as fit
-  - `minmax(280px, 1fr)`: Each column min 280px, max equal share
+  - `minmax(320px, 1fr)`: Each column min 320px, max equal share
 - **Effect**: Responsive grid, cards wrap automatically
-- **`gap: 20px`**: Space between cards
+- **`gap: 28px`**: Space between cards
+
+```css
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.empty-state::before {
+  content: '';
+  display: block;
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+```
+- **`::before` pseudo-element**: Add emoji before text
+- **`content: ''`**: The note emoji displayed
 
 ---
 
-### 10. `src/components/NoteCard.jsx`
+### 11. `src/components/NoteCard.jsx`
 
 ```javascript
+import { Pencil, Trash2 } from 'lucide-react';
 import './NoteCard.css';
+```
+- **`Pencil, Trash2`**: Icon components from lucide-react
+- **Why lucide**: Clean, consistent icons as React components
 
+```javascript
 function NoteCard({ note, onEdit, onDelete }) {
 ```
 - **Props**:
@@ -1066,14 +1224,18 @@ function NoteCard({ note, onEdit, onDelete }) {
   - `onEdit`: Callback when edit clicked
   - `onDelete`: Callback when delete clicked
 
+---
+
+#### formatDate Function:
+
 ```javascript
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+};
 ```
 - **What**: Format ISO date to readable string
 - **Input**: `"2024-01-15T10:30:00.000Z"`
@@ -1081,63 +1243,179 @@ function NoteCard({ note, onEdit, onDelete }) {
 - **`toLocaleDateString`**: Browser's date formatting
 - **Options**: Customize format (short month, numeric day/year)
 
+---
+
+#### Card JSX:
+
 ```javascript
-  return (
-    <div className="note-card" style={{ backgroundColor: note.color || '#ffffff' }}>
+return (
+  <section
+    className="note-card"
+    style={{ backgroundColor: note.color || '#ffffff' }}
+  >
+    <h3 className="note-title">{note.title}</h3>
+    <p className="note-content">{note.content}</p>
 ```
+- **`<section>`**: Semantic HTML for content section
 - **Inline style**: Dynamic background color
 - **Fallback**: White if color undefined
 
 ```javascript
-      <h3 className="note-title">{note.title}</h3>
-      <p className="note-content">{note.content}</p>
+    <div className="note-footer">
+      <span className="note-date">{formatDate(note.createdAt)}</span>
+      <div className="note-actions">
 ```
-- **Display note data**
-- **`{note.title}`**: JSX expression to show value
-
-```javascript
-      <div className="note-footer">
-        <span className="note-date">{formatDate(note.createdAt)}</span>
-```
-- **Show creation date**
+- **Footer**: Date and action buttons
 - **`formatDate(note.createdAt)`**: Call function with date string
 
 ```javascript
-        <div className="note-actions">
-          <button onClick={() => onEdit(note)} className="action-btn edit-btn" title="Edit">
+        <button
+          onClick={() => onEdit(note)}
+          className="action-btn edit-btn"
+          title="Edit"
+        >
+          <Pencil size={18} />
+        </button>
 ```
 - **Edit button**
 - **`onClick={() => onEdit(note)}`**: Pass entire note object to parent
+- **`<Pencil size={18} />`**: Pencil icon, 18px size
 - **`title="Edit"`**: Tooltip on hover
 
 ```javascript
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-```
-- **Inline SVG icon**: Edit/pencil icon
-- **`stroke="currentColor"`**: Uses CSS color
-- **Why SVG**: Scalable, no extra HTTP request
-
-```javascript
-          </button>
-          <button onClick={() => onDelete(note._id)} className="action-btn delete-btn" title="Delete">
+        <button
+          onClick={() => onDelete(note._id)}
+          className="action-btn delete-btn"
+          title="Delete"
+        >
+          <Trash2 size={18} />
+        </button>
 ```
 - **Delete button**
 - **`onDelete(note._id)`**: Pass only the ID (that's all delete needs)
+- **`<Trash2 size={18} />`**: Trash icon
 
 ```javascript
-            <svg><!-- Trash icon SVG --></svg>
-          </button>
-        </div>
       </div>
     </div>
-  );
-}
+  </section>
+);
 
 export default NoteCard;
 ```
+
+---
+
+### 12. `src/components/NoteCard.css`
+
+```css
+.note-card {
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+```
+- **`display: flex; flex-direction: column`**: Stack content vertically
+- **`min-height: 280px`**: Minimum card height for consistency
+- **`position: relative`**: For positioning the `::before` pseudo-element
+- **`overflow: hidden`**: Clip the accent bar
+
+```css
+.note-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.note-card:hover::before {
+  opacity: 1;
+}
+```
+- **`::before`**: Accent bar at top
+- **`opacity: 0`**: Hidden by default
+- **`opacity: 1` on hover**: Show gradient bar when hovering
+
+```css
+.note-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+}
+```
+- **Hover effect**: Card lifts up 8px
+- **Stronger shadow**: Creates "floating" effect
+
+```css
+.note-title {
+  margin: 0 0 16px 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #2d3748;
+  word-break: break-word;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+}
+```
+- **`word-break: break-word`**: Long words wrap instead of overflow
+
+```css
+.note-content {
+  margin: 0 0 20px 0;
+  font-size: 15px;
+  color: #4a5568;
+  line-height: 1.7;
+  word-break: break-word;
+  white-space: pre-wrap;
+  flex: 1;
+}
+```
+- **`white-space: pre-wrap`**: Preserve line breaks from textarea
+- **`flex: 1`**: Grow to fill available space (pushes footer down)
+
+```css
+.action-btn {
+  background: rgba(0, 0, 0, 0.06);
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  color: #4a5568;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
+}
+
+.edit-btn:hover {
+  background: rgba(102, 126, 234, 0.15);
+  color: #667eea;
+}
+
+.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+```
+- **Subtle default background**: Light gray
+- **Edit hover**: Purple tint (matches theme)
+- **Delete hover**: Red tint (indicates danger)
 
 ---
 
@@ -1145,7 +1423,7 @@ export default NoteCard;
 
 ### 1. Components
 
-Components are reusable pieces of UI. Two types:
+Components are reusable pieces of UI:
 
 ```javascript
 // Function Component (modern, recommended)
@@ -1252,41 +1530,41 @@ const [value, setValue] = useState('');
 ## Data Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                              App.jsx                                     │
-│                                                                          │
-│   State: notes[], editingNote, loading                                   │
-│   Functions: fetchNotes, addNote, updateNote, deleteNote                │
-│                                                                          │
-│   ┌────────────────────────────────────────────────────────────────┐    │
-│   │                                                                │    │
-│   │    Props Down                              Events Up           │    │
-│   │         │                                      │               │    │
-│   │         ▼                                      │               │    │
-│   │  ┌─────────────┐                              │               │    │
-│   │  │  NoteForm   │──────────────────────────────┘               │    │
-│   │  │             │  onSubmit(note)                               │    │
-│   │  │ editingNote │  onCancel()                                   │    │
-│   │  └─────────────┘                                               │    │
-│   │                                                                │    │
-│   │         │                                      │               │    │
-│   │         ▼                                      │               │    │
-│   │  ┌─────────────┐                              │               │    │
-│   │  │  NoteList   │                              │               │    │
-│   │  │             │                              │               │    │
-│   │  │   notes[]   │                              │               │    │
-│   │  └─────────────┘                              │               │    │
-│   │         │                                      │               │    │
-│   │         ▼                                      │               │    │
-│   │  ┌─────────────┐                              │               │    │
-│   │  │  NoteCard   │──────────────────────────────┘               │    │
-│   │  │             │  onEdit(note)                                 │    │
-│   │  │    note     │  onDelete(id)                                 │    │
-│   │  └─────────────┘                                               │    │
-│   │                                                                │    │
-│   └────────────────────────────────────────────────────────────────┘    │
-│                                                                          │
-└─────────────────────────────────────────────────────────────────────────┘
++---------------------------------------------------------------------------+
+|                              App.jsx                                       |
+|                                                                            |
+|   State: notes[], editingNote, loading                                     |
+|   Functions: fetchNotes, addNote, updateNote, deleteNote                   |
+|                                                                            |
+|   +--------------------------------------------------------------------+   |
+|   |                                                                    |   |
+|   |    Props Down                              Events Up               |   |
+|   |         |                                      |                   |   |
+|   |         v                                      |                   |   |
+|   |  +-------------+                               |                   |   |
+|   |  |  NoteForm   |-------------------------------+                   |   |
+|   |  |             |  onSubmit(note)                                   |   |
+|   |  | editingNote |  onCancel()                                       |   |
+|   |  +-------------+                                                   |   |
+|   |                                                                    |   |
+|   |         |                                      |                   |   |
+|   |         v                                      |                   |   |
+|   |  +-------------+                               |                   |   |
+|   |  |  NoteList   |                               |                   |   |
+|   |  |             |                               |                   |   |
+|   |  |   notes[]   |                               |                   |   |
+|   |  +-------------+                               |                   |   |
+|   |         |                                      |                   |   |
+|   |         v                                      |                   |   |
+|   |  +-------------+                               |                   |   |
+|   |  |  NoteCard   |-------------------------------+                   |   |
+|   |  |             |  onEdit(note)                                     |   |
+|   |  |    note     |  onDelete(id)                                     |   |
+|   |  +-------------+                                                   |   |
+|   |                                                                    |   |
+|   +--------------------------------------------------------------------+   |
+|                                                                            |
++---------------------------------------------------------------------------+
 ```
 
 **Data flows DOWN through props**
@@ -1298,25 +1576,29 @@ const [value, setValue] = useState('');
 
 ```
 App
-│
-├── Header (h1)
-│
-├── NoteForm
-│   ├── Title Input
-│   ├── Content Textarea
-│   ├── Color Picker (6 buttons)
-│   ├── Cancel Button (conditional)
-│   └── Submit Button
-│
-└── NoteList
-    ├── Empty State (if no notes)
-    │
-    └── NoteCard (for each note)
-        ├── Title (h3)
-        ├── Content (p)
-        ├── Date (span)
-        ├── Edit Button (svg icon)
-        └── Delete Button (svg icon)
+|
++-- Header (h1)
+|
++-- NoteForm
+|   +-- Title Input
+|   +-- Content Textarea
+|   +-- Color Picker (6 buttons)
+|   +-- Cancel Button (conditional)
+|   +-- Submit Button
+|
++-- Loading Spinner (conditional)
+|
++-- NoteList
+|   +-- Empty State (if no notes)
+|   |
+|   +-- NoteCard (for each note)
+|       +-- Title (h3)
+|       +-- Content (p)
+|       +-- Date (span)
+|       +-- Edit Button (Pencil icon)
+|       +-- Delete Button (Trash2 icon)
+|
++-- Footer
 ```
 
 ---
@@ -1327,29 +1609,33 @@ App
 
 1. User fills form, clicks "Add Note"
 2. `NoteForm.handleSubmit` called
-3. `onSubmit` prop called (which is `App.addNote`)
-4. `addNote` sends POST to backend
-5. Backend creates note, returns with `_id`
-6. `setNotes([newNote, ...notes])` updates state
-7. React re-renders, NoteList receives new array
-8. New NoteCard appears
+3. `e.preventDefault()` stops page reload
+4. Validation: check if title and content have text
+5. `onSubmit` prop called (which is `App.addNote`)
+6. `addNote` sends POST request to backend
+7. Backend creates note, returns with `_id`
+8. `setNotes([newNote, ...notes])` updates state
+9. React re-renders, NoteList receives new array
+10. New NoteCard appears in grid
 
 ### Editing a Note:
 
-1. User clicks edit icon on NoteCard
+1. User clicks Pencil icon on NoteCard
 2. `onEdit(note)` called → `setEditingNote(note)`
 3. App re-renders with `editingNote` set
-4. NoteForm's `useEffect` runs, pre-fills fields
-5. Submit button shows "Update"
-6. User edits, clicks "Update"
-7. `onSubmit` now calls `updateNote`
-8. PUT request to backend
-9. `setNotes` with mapped array (replace edited note)
-10. `setEditingNote(null)` clears editing state
+4. NoteForm gets new `key` prop, remounts
+5. useState initializes with `editingNote` values
+6. Submit button shows "Update", Cancel button appears
+7. User edits, clicks "Update"
+8. `onSubmit` calls `updateNote(editingNote._id, note)`
+9. PUT request to backend
+10. `setNotes` with mapped array (replace edited note)
+11. `setEditingNote(null)` clears editing state
+12. NoteForm remounts with empty values
 
 ### Deleting a Note:
 
-1. User clicks delete icon
+1. User clicks Trash2 icon
 2. `onDelete(note._id)` called
 3. DELETE request to backend
 4. `setNotes(notes.filter(...))` removes from state
@@ -1370,3 +1656,23 @@ App
 | `condition ? <A /> : <B />` | Show one or the other |
 | `array.map(item => <Item />)` | Render list |
 | `() => handler(arg)` | Pass argument to handler |
+
+| Array Method | Purpose | Mutates? |
+|--------------|---------|----------|
+| `.map()` | Transform each item | No (returns new array) |
+| `.filter()` | Remove items | No (returns new array) |
+| `.push()` | Add item | Yes (don't use with state!) |
+
+---
+
+## Environment Variables
+
+Create a `.env` file in the frontend folder:
+
+```
+VITE_API_URL=http://localhost:5001/api
+```
+
+- **`VITE_` prefix**: Required for Vite to expose to client code
+- **Access in code**: `import.meta.env.VITE_API_URL`
+- **Production**: Change to deployed backend URL

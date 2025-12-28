@@ -81,7 +81,7 @@ function App() {
         />
         {loading ? (
           <div className='loading'>
-            <Loader2 className="animate-spin" size={32} />
+            <Loader2 className='animate-spin' size={32} />
           </div>
         ) : (
           <NoteList
